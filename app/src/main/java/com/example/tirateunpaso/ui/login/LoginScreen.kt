@@ -1,4 +1,4 @@
-package com.example.tirateunpaso
+package com.example.tirateunpaso.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tirateunpaso.R
 
 @Composable
 fun LoginScreen(){
