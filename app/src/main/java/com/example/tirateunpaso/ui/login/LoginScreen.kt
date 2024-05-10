@@ -70,20 +70,28 @@ fun LoginScreen(){
         Button(onClick = { }){
             Text(text = "Iniciar sesión")
         }
+    }
 
-        Spacer(modifier = Modifier.height(4.dp))
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "No tengo una cuenta",
+            modifier = Modifier.clickable {},
+            fontSize = 17.sp
+        )
 
-        Button(onClick = { }){
-            Text(text = "Registrarme")
-        }
+        Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(70.dp))
-        
-        Text(text = "Olvidé mi contraseña", modifier = Modifier.clickable {
+        Text(
+            text = "Olvidé mi contraseña",
+            modifier = Modifier.clickable {},
+            fontSize = 17.sp
+        )
 
-        },
-            fontSize = 17.sp)
-
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
