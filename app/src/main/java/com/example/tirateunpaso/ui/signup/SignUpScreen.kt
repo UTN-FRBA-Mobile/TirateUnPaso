@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,26 +38,26 @@ import com.example.tirateunpaso.ui.routes
 @Composable
 fun SignUpScreen(navController: NavController? = null){
 
-    var username by remember {
+    var username by rememberSaveable {
         mutableStateOf("")
     }
-    var email by remember {
+    var email by rememberSaveable {
         mutableStateOf("")
     }
-    var password by remember {
+    var password by rememberSaveable {
         mutableStateOf("")
     }
-    var secondPassword by remember {
+    var secondPassword by rememberSaveable {
         mutableStateOf("")
     }
-    var age by remember {
+    var age by rememberSaveable {
         mutableStateOf("")
     }
-    var height by remember {
+    var height by rememberSaveable {
         mutableStateOf("")
     }
     val sexList = listOf("Selecciona tu sexo","Masculino", "Femenino", "Otro")
-    var sex by remember {
+    var sex by rememberSaveable {
         mutableStateOf(sexList[0])
     }
     var isExpanded by remember{
