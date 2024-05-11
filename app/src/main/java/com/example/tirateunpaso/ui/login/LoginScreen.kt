@@ -24,10 +24,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.tirateunpaso.R
+import com.example.tirateunpaso.ui.routes
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(navController: NavController? = null){
 
     var email by remember {
         mutableStateOf("")
@@ -57,8 +59,6 @@ fun LoginScreen(){
             Text(text = "Correo electrónico")
         })
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         OutlinedTextField(value = password, onValueChange = {
             password = it
         }, label = {
@@ -67,7 +67,9 @@ fun LoginScreen(){
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { }){
+        Button(onClick = {
+            navController?.navigate(routes.home)
+        }){
             Text(text = "Iniciar sesión")
         }
     }
@@ -78,7 +80,7 @@ fun LoginScreen(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "No tengo una cuenta",
+            text = "Olvidé mi contraseña",
             modifier = Modifier.clickable {},
             fontSize = 17.sp
         )
@@ -86,8 +88,10 @@ fun LoginScreen(){
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Olvidé mi contraseña",
-            modifier = Modifier.clickable {},
+            text = "No tengo una cuenta",
+            modifier = Modifier.clickable {
+                navController?.navigate(routes.signup)
+            },
             fontSize = 17.sp
         )
 

@@ -29,12 +29,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.tirateunpaso.R
+import com.example.tirateunpaso.ui.routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(){
+fun SignUpScreen(navController: NavController? = null){
 
+    var username by remember {
+        mutableStateOf("")
+    }
     var email by remember {
         mutableStateOf("")
     }
@@ -65,14 +70,20 @@ fun SignUpScreen(){
     ) {
         Image(painter = painterResource(id = R.drawable.signupimage),
             contentDescription = "Login image",
-            modifier = Modifier.size(150.dp))
+            modifier = Modifier.size(120.dp))
 
         Text(text = "Da tus primeros pasos",
             fontSize = 23.sp,
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
+
+        OutlinedTextField(value = username, onValueChange = {
+            username = it
+        }, label = {
+            Text(text = "Nombre de usuario")
+        })
 
         OutlinedTextField(value = email, onValueChange = {
             email = it
@@ -104,7 +115,7 @@ fun SignUpScreen(){
             Text(text = "Altura")
         })
 
-        Spacer(modifier = Modifier.height(9.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         ExposedDropdownMenuBox(
             expanded = isExpanded,
@@ -139,9 +150,9 @@ fun SignUpScreen(){
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = { }){
+        Button(onClick = {
+            navController?.navigate(routes.home)
+        }){
             Text(text = "Registrarme")
         }
     }
@@ -152,7 +163,9 @@ fun SignUpScreen(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Ya tengo una cuenta",
-            modifier = Modifier.clickable {},
+            modifier = Modifier.clickable {
+                navController?.navigate(routes.login)
+            },
             fontSize = 17.sp
         )
         Spacer(modifier = Modifier.height(8.dp))
