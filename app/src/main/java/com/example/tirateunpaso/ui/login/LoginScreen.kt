@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Lock
@@ -27,19 +30,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.tirateunpaso.R
 import com.example.tirateunpaso.ui.components.HeaderText
 import com.example.tirateunpaso.ui.components.LoginTextField
-import com.example.tirateunpaso.ui.routes
+import com.example.tirateunpaso.ui.values.defaultPadding
+import com.example.tirateunpaso.ui.values.defaultSpacing
+import com.example.tirateunpaso.ui.values.fontsize
 
 @Composable
-fun LoginScreen(navController: NavController? = null){
-
-    val defaultPadding = 16.dp
-    val defaultSpacing = 16.dp
-    val fontsize = 16.sp
+fun LoginScreen(onLoginClick:() -> Unit, onSignUpClick:() -> Unit){
 
     val (username,setUsername) = rememberSaveable {
         mutableStateOf("")
@@ -50,10 +49,14 @@ fun LoginScreen(navController: NavController? = null){
     val (checked,setChecked) = rememberSaveable {
         mutableStateOf(false)
     }
+    val fieldsCompleted =
+        username.isNotEmpty() &&
+        password.isNotEmpty()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(defaultPadding),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -107,45 +110,40 @@ fun LoginScreen(navController: NavController? = null){
         }
         Spacer(modifier = Modifier.height(defaultSpacing))
         Button(
-            onClick = {
-                navController?.navigate(routes.home)
-            },
-            modifier = Modifier.fillMaxWidth()
+            onClick = onLoginClick,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = fieldsCompleted
         ){
             Text(
                 text = "Iniciar sesión",
                 fontSize = fontsize)
         }
-    }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
         Row (
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxSize()
+                .wrapContentSize(align = Alignment.BottomCenter)
         ){
             Text(
                 text = "¿No tenés una cuenta?",
                 fontSize = fontsize
             )
-            TextButton(onClick = {
-                navController?.navigate(routes.signup)
-            }) {
+            TextButton(
+                onClick = onSignUpClick
+            ) {
                 Text(
                     text = "Registrate",
                     fontSize = fontsize
                 )
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
 fun DefaultLoginPreview() {
-    LoginScreen()
+    LoginScreen({},{})
 }

@@ -1,20 +1,32 @@
 package com.example.tirateunpaso.ui.signup
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,37 +37,42 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.tirateunpaso.R
-import com.example.tirateunpaso.ui.routes
+import com.example.tirateunpaso.ui.components.HeaderText
+import com.example.tirateunpaso.ui.components.LoginTextField
+import com.example.tirateunpaso.ui.values
+import com.example.tirateunpaso.ui.values.defaultPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(navController: NavController? = null){
+fun SignUpScreen(
+    onSignUpClick:() -> Unit,
+    onLoginClick:() -> Unit
+){
 
-    var username by rememberSaveable {
+    val (username,setUsername) = rememberSaveable {
         mutableStateOf("")
     }
-    var email by rememberSaveable {
+    val (email,setEmail) = rememberSaveable {
         mutableStateOf("")
     }
-    var password by rememberSaveable {
+    val (password,setPassword) = rememberSaveable {
         mutableStateOf("")
     }
-    var secondPassword by rememberSaveable {
+    val (secondPassword,setSecondPassword) = rememberSaveable {
         mutableStateOf("")
     }
-    var age by rememberSaveable {
+    val (age,setAge) = rememberSaveable {
         mutableStateOf("")
     }
-    var height by rememberSaveable {
+    val (height,setHeight) = rememberSaveable {
         mutableStateOf("")
     }
+
     val sexList = listOf("Selecciona tu sexo","Masculino", "Femenino", "Otro")
     var sex by rememberSaveable {
         mutableStateOf(sexList[0])
@@ -64,75 +81,108 @@ fun SignUpScreen(navController: NavController? = null){
         mutableStateOf(false)
     }
 
+    val fieldsCompleted =
+        username.isNotEmpty() &&
+        email.isNotEmpty() &&
+        password.isNotEmpty() &&
+        secondPassword.isNotEmpty() &&
+        age.isNotEmpty() &&
+        height.isNotEmpty() &&
+        sex != sexList[0]
+
+    var matchingPasswords by remember {
+        mutableStateOf(false)
+    }
+
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(defaultPadding),
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(painter = painterResource(id = R.drawable.signupimage),
             contentDescription = "Login image",
-            modifier = Modifier.size(120.dp))
+            modifier = Modifier.size(80.dp))
 
-        Text(text = "Da tus primeros pasos",
-            fontSize = 23.sp,
-            fontWeight = FontWeight.Bold
+        HeaderText(
+            text = "Da tu primer paso",
+            modifier = Modifier.padding(vertical = defaultPadding)
         )
+        AnimatedVisibility(visible = !matchingPasswords) {
+            Text(
+                text = "Las contraseñas ingresadas no coinciden",
+                color = MaterialTheme.colorScheme.error
+            )
+        }
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        OutlinedTextField(value = username, onValueChange = {
-            username = it
-        }, label = {
-            Text(text = "Nombre de usuario")
-        })
-
-        OutlinedTextField(value = email, onValueChange = {
-            email = it
-        }, label = {
-            Text(text = "Correo electrónico")
-        })
-
-        OutlinedTextField(value = password, onValueChange = {
-            password = it
-        }, label = {
-            Text(text = "Contraseña")
-        }, visualTransformation = PasswordVisualTransformation())
-
-        OutlinedTextField(value = secondPassword, onValueChange = {
-            secondPassword = it
-        }, label = {
-            Text(text = "Repetí tu contraseña")
-        }, visualTransformation = PasswordVisualTransformation())
-
-        OutlinedTextField(value = age, onValueChange = {
-            age = it
-        }, label = {
-            Text(text = "Edad")
-        })
-
-        OutlinedTextField(value = height, onValueChange = {
-            height = it
-        }, label = {
-            Text(text = "Altura")
-        })
-
-        Spacer(modifier = Modifier.height(8.dp))
+        LoginTextField(
+            value = username,
+            onValueChange = setUsername,
+            labelText = "Nombre de usuario",
+            leadingIcon = Icons.Default.AccountCircle,
+            modifier = Modifier.fillMaxWidth()
+        )
+        LoginTextField(
+            value = email,
+            onValueChange = setEmail,
+            labelText = "Correo electrónico",
+            leadingIcon = Icons.Default.Email,
+            modifier = Modifier.fillMaxWidth()
+        )
+        LoginTextField(
+            value = password,
+            onValueChange = setPassword,
+            labelText = "Contraseña",
+            leadingIcon = Icons.Default.Lock,
+            modifier = Modifier.fillMaxWidth(),
+            keyboardType = KeyboardType.Password,
+            visualTransformation = PasswordVisualTransformation()
+        )
+        LoginTextField(
+            value = secondPassword,
+            onValueChange = setSecondPassword,
+            labelText = "Repetí tu contraseña",
+            leadingIcon = Icons.Default.Lock,
+            modifier = Modifier.fillMaxWidth(),
+            keyboardType = KeyboardType.Password,
+            visualTransformation = PasswordVisualTransformation()
+        )
+        LoginTextField(
+            value = age,
+            onValueChange = setAge,
+            labelText = "Edad",
+            leadingIcon = Icons.Default.DateRange,
+            modifier = Modifier.fillMaxWidth()
+        )
+        LoginTextField(
+            value = height,
+            onValueChange = setHeight,
+            labelText = "Altura",
+            leadingIcon = Icons.Default.Person,
+            modifier = Modifier.fillMaxWidth()
+        )
 
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             onExpandedChange = {isExpanded = !isExpanded}
         ) {
             TextField(
-                modifier = Modifier.menuAnchor(),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
                 value = sex,
                 onValueChange = {},
                 readOnly = true,
+                shape = RoundedCornerShape(30),
                 trailingIcon = {ExposedDropdownMenuDefaults.
                     TrailingIcon(expanded = isExpanded)}
             )
 
             ExposedDropdownMenu(
                 expanded = isExpanded,
+                modifier = Modifier.fillMaxWidth(),
                 onDismissRequest = { isExpanded = false }) {
                 sexList.forEachIndexed { index, text ->
                     DropdownMenuItem(
@@ -151,30 +201,50 @@ fun SignUpScreen(navController: NavController? = null){
             }
         }
 
-        Button(onClick = {
-            navController?.navigate(routes.home)
-        }){
-            Text(text = "Registrarme")
+        Button(
+            onClick = {
+                matchingPasswords = password == secondPassword
+                if(matchingPasswords){
+                    onSignUpClick()
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = fieldsCompleted
+        ){
+            Text(
+                text = "Registrarte",
+                fontSize = values.fontsize
+            )
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Ya tengo una cuenta",
-            modifier = Modifier.clickable {
-                navController?.navigate(routes.login)
-            },
-            fontSize = 17.sp
+    Row (
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(
+                align =
+                Alignment.BottomCenter
+            )
+    ){
+        Text(
+            text = "¿Ya tenés una cuenta?",
+            fontSize = values.fontsize
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        TextButton(
+            onClick = onLoginClick
+        ) {
+            Text(
+                text = "Inicia sesión",
+                fontSize = values.fontsize
+            )
+        }
     }
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun DefaultSignUpPreview() {
-    SignUpScreen()
+    SignUpScreen({},{})
 }
