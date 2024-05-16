@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tirateunpaso.R
 import com.example.tirateunpaso.ui.components.HeaderText
+import com.example.tirateunpaso.ui.components.LoginFooter
 import com.example.tirateunpaso.ui.components.LoginTextField
 import com.example.tirateunpaso.ui.values.defaultPadding
 import com.example.tirateunpaso.ui.values.defaultSpacing
@@ -61,9 +62,11 @@ fun LoginScreen(onLoginClick:() -> Unit, onSignUpClick:() -> Unit){
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(painter = painterResource(id = R.drawable.loginimage),
+        Image(
+            painter = painterResource(id = R.drawable.loginimage),
             contentDescription = "Login image",
-            modifier = Modifier.size(200.dp))
+            modifier = Modifier.size(200.dp)
+        )
         HeaderText(
             text = "Estás a sólo un paso",
             modifier = Modifier.padding(vertical = defaultPadding)
@@ -88,11 +91,11 @@ fun LoginScreen(onLoginClick:() -> Unit, onSignUpClick:() -> Unit){
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Row (
+        ) {
+            Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Checkbox(checked = checked, onCheckedChange = setChecked)
                 Text(
                     text = "Recordarme",
@@ -100,7 +103,7 @@ fun LoginScreen(onLoginClick:() -> Unit, onSignUpClick:() -> Unit){
                 )
             }
             Row {
-                TextButton(onClick = {  }) {
+                TextButton(onClick = { }) {
                     Text(
                         text = "Olvidé mi contraseña",
                         fontSize = fontsize
@@ -113,33 +116,22 @@ fun LoginScreen(onLoginClick:() -> Unit, onSignUpClick:() -> Unit){
             onClick = onLoginClick,
             modifier = Modifier.fillMaxWidth(),
             enabled = fieldsCompleted
-        ){
+        ) {
             Text(
                 text = "Iniciar sesión",
-                fontSize = fontsize)
-        }
-
-        Row (
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxSize()
-                .wrapContentSize(align = Alignment.BottomCenter)
-        ){
-            Text(
-                text = "¿No tenés una cuenta?",
                 fontSize = fontsize
             )
-            TextButton(
-                onClick = onSignUpClick
-            ) {
-                Text(
-                    text = "Registrate",
-                    fontSize = fontsize
-                )
-            }
         }
-
     }
+        LoginFooter(
+            onClick = onSignUpClick,
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize(align = Alignment.BottomCenter),
+            text = "¿No tenés una cuenta?",
+            buttonText = "Registrate"
+        )
+
 }
 
 @Preview(showSystemUi = true)

@@ -67,7 +67,9 @@ fun TirateUnPasoNavigation(navHostController: NavHostController) {
                                 route = routes.app_flow
                             )
                         }
-                    }
+                    },
+                    onStatisticsClick = {},
+                    onAchievementsClick = {}
                 )
             }
         }

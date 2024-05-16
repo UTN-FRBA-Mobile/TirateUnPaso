@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,7 +25,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tirateunpaso.R
 import com.example.tirateunpaso.ui.components.HeaderText
+import com.example.tirateunpaso.ui.components.LoginFooter
 import com.example.tirateunpaso.ui.components.LoginTextField
 import com.example.tirateunpaso.ui.values
 import com.example.tirateunpaso.ui.values.defaultPadding
@@ -218,29 +217,14 @@ fun SignUpScreen(
         }
     }
 
-    Row (
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
+    LoginFooter(
+        onClick = onLoginClick,
         modifier = Modifier
             .fillMaxSize()
-            .wrapContentSize(
-                align =
-                Alignment.BottomCenter
-            )
-    ){
-        Text(
-            text = "¿Ya tenés una cuenta?",
-            fontSize = values.fontsize
-        )
-        TextButton(
-            onClick = onLoginClick
-        ) {
-            Text(
-                text = "Inicia sesión",
-                fontSize = values.fontsize
-            )
-        }
-    }
+            .wrapContentSize(align = Alignment.BottomCenter),
+        text = "¿Ya tenés una cuenta?",
+        buttonText = "Inicia sesión"
+    )
 }
 
 @Preview(showSystemUi = true)
