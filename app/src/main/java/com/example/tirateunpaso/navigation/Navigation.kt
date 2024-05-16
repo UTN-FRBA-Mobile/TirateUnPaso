@@ -7,10 +7,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.tirateunpaso.ui.login.LoginScreen
-import com.example.tirateunpaso.ui.main.HomeScreen
+import com.example.tirateunpaso.ui.screens.LoginScreen
+import com.example.tirateunpaso.ui.screens.HomeScreen
 import com.example.tirateunpaso.ui.routes
-import com.example.tirateunpaso.ui.signup.SignUpScreen
+import com.example.tirateunpaso.ui.screens.SignUpScreen
 
 @Composable
 fun TirateUnPasoNavigation(navHostController: NavHostController) {
@@ -23,7 +23,7 @@ fun TirateUnPasoNavigation(navHostController: NavHostController) {
                 LoginScreen(
                     onLoginClick = {
                         navHostController.navigate(
-                            routes.home
+                            routes.app_flow
                         ){
                             popUpTo(
                                 route = routes.login_flow
@@ -41,12 +41,12 @@ fun TirateUnPasoNavigation(navHostController: NavHostController) {
                 SignUpScreen(
                     onLoginClick = {
                         navHostController.navigateToSingleTop(
-                            routes.login
+                            routes.login_flow
                         )
                     },
                     onSignUpClick = {
                         navHostController.navigate(
-                            routes.home
+                            routes.app_flow
                         ){
                             popUpTo(
                                 route = routes.login_flow
@@ -55,10 +55,21 @@ fun TirateUnPasoNavigation(navHostController: NavHostController) {
                     }
                 )
             }
-
         }
-        composable(route = routes.home){
-            HomeScreen()
+        navigation(startDestination = routes.home, route = routes.app_flow){
+            composable(route = routes.home){
+                HomeScreen(
+                    onLogoutClick = {
+                        navHostController.navigate(
+                            routes.login
+                        ){
+                            popUpTo(
+                                route = routes.app_flow
+                            )
+                        }
+                    }
+                )
+            }
         }
     }
 }

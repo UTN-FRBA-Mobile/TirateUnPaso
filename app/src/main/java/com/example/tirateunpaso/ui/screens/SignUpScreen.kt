@@ -1,4 +1,4 @@
-package com.example.tirateunpaso.ui.signup
+package com.example.tirateunpaso.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
