@@ -123,15 +123,14 @@ fun LoginScreen(onLoginClick:() -> Unit, onSignUpClick:() -> Unit){
             )
         }
     }
-        LoginFooter(
-            onClick = onSignUpClick,
-            modifier = Modifier
-                .fillMaxSize()
-                .wrapContentSize(align = Alignment.BottomCenter),
-            text = "¿No tenés una cuenta?",
-            buttonText = "Registrate"
-        )
-
+    LoginFooter(
+        onClick = onSignUpClick,
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(align = Alignment.BottomCenter),
+        text = "¿No tenés una cuenta?",
+        buttonText = "Registrate"
+    )
 }
 
 @Preview(showSystemUi = true)

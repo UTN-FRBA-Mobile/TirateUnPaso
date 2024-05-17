@@ -10,7 +10,9 @@ import androidx.navigation.navigation
 import com.example.tirateunpaso.ui.screens.LoginScreen
 import com.example.tirateunpaso.ui.screens.HomeScreen
 import com.example.tirateunpaso.ui.routes
+import com.example.tirateunpaso.ui.screens.AchievementsScreen
 import com.example.tirateunpaso.ui.screens.SignUpScreen
+import com.example.tirateunpaso.ui.screens.StatisticsScreen
 
 @Composable
 fun TirateUnPasoNavigation(navHostController: NavHostController) {
@@ -61,15 +63,41 @@ fun TirateUnPasoNavigation(navHostController: NavHostController) {
                 HomeScreen(
                     onLogoutClick = {
                         navHostController.navigate(
-                            routes.login
+                            routes.login_flow
                         ){
                             popUpTo(
                                 route = routes.app_flow
                             )
                         }
                     },
-                    onStatisticsClick = {},
-                    onAchievementsClick = {}
+                    onStatisticsClick = {
+                        navHostController.navigateToSingleTop(
+                            routes.statistics
+                        )
+                    },
+                    onAchievementsClick = {
+                        navHostController.navigateToSingleTop(
+                            routes.achievements
+                        )
+                    }
+                )
+            }
+            composable(route = routes.achievements){
+                AchievementsScreen(
+                    onHomeClick = {
+                        navHostController.navigateToSingleTop(
+                            routes.home
+                        )
+                    }
+                )
+            }
+            composable(route = routes.statistics){
+                StatisticsScreen(
+                    onHomeClick = {
+                        navHostController.navigateToSingleTop(
+                            routes.home
+                        )
+                    }
                 )
             }
         }
