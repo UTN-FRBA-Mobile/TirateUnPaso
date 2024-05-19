@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
@@ -85,19 +84,20 @@ fun ExpandableCard(
                     painter = painterResource(id = trophy_id),
                     contentDescription = "Achievement trophy",
                     modifier = Modifier
-                        .size(80.dp)
+                        .weight(2f)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = content.title,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.width(230.dp),
+                    modifier = Modifier.weight(7f),
                     maxLines = 3
                 )
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .fillMaxWidth()
+                        .weight(1f)
                         .wrapContentSize(align = Alignment.CenterEnd),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
