@@ -75,7 +75,6 @@ fun BarChartH(data: List<BarChartData>) {
 }
 
 /// Gráfico en vertical
-// Gráfico en vertical
 @Composable
 fun BarChartV(data: List<BarChartData>) {
     // Obtener el valor máximo para ajustar la altura de la barra
@@ -87,11 +86,12 @@ fun BarChartV(data: List<BarChartData>) {
             .fillMaxWidth()
     ) {
         Row(
-            verticalAlignment = Alignment.Bottom, // Alinea todo el contenido al fondo de la Card
+            verticalAlignment = Alignment.Bottom, // Alinea el contenido al fondo de la Card
             modifier = Modifier.padding(16.dp)
         ) {
             data.forEach { item ->
                 Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .width(100.dp)
                         .padding(vertical = 4.dp),
@@ -99,8 +99,12 @@ fun BarChartV(data: List<BarChartData>) {
                 ) {
                     Text(
                         text = item.value.toString(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .fillMaxWidth()
                     )
+
                     Spacer(modifier = Modifier.height(4.dp))
 
                     Box(
@@ -114,7 +118,7 @@ fun BarChartV(data: List<BarChartData>) {
                     Text(
                         text = item.category,
                         modifier = Modifier
-                            .padding(top = 4.dp)
+                            .padding(bottom = 4.dp)
                             .fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
