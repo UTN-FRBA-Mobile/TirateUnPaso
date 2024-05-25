@@ -23,6 +23,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <!-- No tiene el intent-filter LAUNCHER, no es el acitvity principal -->
+        <activity
+            android:name=".ui.screens.FilterActivity"
+            android:exported="true"
+            android:label="Filter Activity"
+            android:theme="@style/Theme.TirateUnPaso">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
