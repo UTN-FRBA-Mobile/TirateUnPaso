@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -16,7 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
-
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 data class BarChartData(val category: String, val value: Int)
 
@@ -29,21 +37,27 @@ fun generateMockBarChartData(): List<BarChartData> {
     )
 }
 
-// Gráfico en horizontal
 @Composable
 fun BarChartH(data: List<BarChartData>) {
-    // Obtener el valor máximo para ajustar la anchura de la barra
-    val maxValue = data.maxOfOrNull { it.value } ?: 1 // Evitar división por cero
+    val maxValue = data.maxOfOrNull { it.value } ?: 1
 
     Card(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
+            .shadow(
+                elevation = 8.dp, // Ajusta la elevación aquí
+                shape = RoundedCornerShape(4.dp), // Forma de la sombra
+            )
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             data.forEach { item ->
+                val animatedWidth by animateFloatAsState(
+                    targetValue = item.value.toFloat() / maxValue.toFloat()
+                )
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -52,21 +66,33 @@ fun BarChartH(data: List<BarChartData>) {
                 ) {
                     Text(
                         text = item.category,
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier.padding(end = 8.dp),
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    // Box con ancho dinámico calculado
                     Box(
                         modifier = Modifier
                             .height(20.dp)
-                            .widthIn(max = 160.dp) // Ancho máximo de la barra
-                            .background(Color.Blue.copy(alpha = 0.7f))
-                            .fillMaxWidth(fraction = item.value.toFloat() / maxValue.toFloat())
+                            .widthIn(max = 160.dp)
+                            .background(
+                                Brush.horizontalGradient(
+                                    colors = listOf(Color(0xFF1976D2), Color(0xFF42A5F5)),
+                                    startX = 0f,
+                                    endX = 1000f
+                                ),
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                            .fillMaxWidth(fraction = animatedWidth)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = item.value.toString(),
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
                     )
                 }
             }
@@ -74,53 +100,70 @@ fun BarChartH(data: List<BarChartData>) {
     }
 }
 
-/// Gráfico en vertical
 @Composable
 fun BarChartV(data: List<BarChartData>) {
-    // Obtener el valor máximo para ajustar la altura de la barra
-    val maxValue = data.maxOfOrNull { it.value } ?: 1 // Evitar división por cero
+    val maxValue = data.maxOfOrNull { it.value } ?: 1
 
     Card(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
+            .shadow(
+                elevation = 8.dp, // Ajusta la elevación aquí
+                shape = RoundedCornerShape(4.dp), // Forma de la sombra
+            )
     ) {
         Row(
-            verticalAlignment = Alignment.Bottom, // Alinea el contenido al fondo de la Card
+            verticalAlignment = Alignment.Bottom,
             modifier = Modifier.padding(16.dp)
         ) {
             data.forEach { item ->
+                val animatedHeight by animateFloatAsState(
+                    targetValue = item.value.toFloat() / maxValue.toFloat()
+                )
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .width(100.dp)
                         .padding(vertical = 4.dp),
-                    verticalArrangement = Arrangement.Bottom // Alinea el contenido de la columna en la parte inferior
+                    verticalArrangement = Arrangement.Bottom
                 ) {
                     Text(
                         text = item.value.toString(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .padding(top = 4.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
                     )
-
                     Spacer(modifier = Modifier.height(4.dp))
-
                     Box(
                         modifier = Modifier
                             .width(20.dp)
-                            .heightIn(max = 200.dp) // Altura máxima de la barra
-                            .background(Color.Blue.copy(alpha = 0.7f))
-                            .fillMaxHeight(fraction = item.value.toFloat() / maxValue.toFloat())
+                            .heightIn(max = 200.dp)
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(Color(0xFF1976D2), Color(0xFF42A5F5)),
+                                    startY = 0f,
+                                    endY = 1000f
+                                ),
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                            .fillMaxHeight(fraction = animatedHeight)
                     )
-
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = item.category,
                         modifier = Modifier
                             .padding(bottom = 4.dp)
                             .fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
