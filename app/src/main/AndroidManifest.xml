@@ -25,11 +25,11 @@
         </activity>
 
 
-        <!-- No tiene el intent-filter LAUNCHER, no es el acitvity principal -->
+        <!-- No es el acitvity principal -->
         <activity
-            android:name=".ui.screens.FilterActivity"
+            android:name=".ui.screens.GraphActivity"
             android:exported="true"
-            android:label="Filter Activity"
+            android:label="Graph Activity"
             android:theme="@style/Theme.TirateUnPaso">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
