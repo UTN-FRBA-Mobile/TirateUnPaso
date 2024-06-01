@@ -18,21 +18,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import com.example.tirateunpaso.database.AppDatabase
+import com.example.tirateunpaso.database.entities.Achievement
 import com.example.tirateunpaso.ui.components.Content
 import com.example.tirateunpaso.ui.components.ExpandableCard
 import com.example.tirateunpaso.ui.values
 
+/*
 val contentList = listOf(
     Content(0,"Caminar 1000 pasos", true, "1000 / 1000"),
     Content(1,"Caminar 300 kilómetros", false, "251 / 300"),
     Content(2,"Quemar 700 calorías", false, "445 / 700"),
     Content(3,"Invitar a 5 amigos", false, "0 / 5"),
     Content(4,"Usar la app durante 30 días consecutivos", false, "18 / 30")
-)
+)*/
+
 @Composable
 fun AchievementsScreen(
     onHomeClick:() -> Unit,
 ) {
+    val db = AppDatabase.getInstance(LocalContext.current)
+    val contentList = db.achievementDao().getAll().map({ a: Achievement ->
+        Content(a.id, a.title, a.unlocked, "%d / %d".format(a.actualScore, a.requiredScore))
+    })
+
     Column(
         modifier = Modifier
             .fillMaxSize()

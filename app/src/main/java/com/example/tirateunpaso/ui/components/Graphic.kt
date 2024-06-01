@@ -28,7 +28,7 @@ fun Graphic(
     Canvas(Modifier.size(graphicSize)) {
         drawRect(color = Color.White) // Draw grey background
         inset(40.0f, 40.0f) {
-            val quadrantSize = size / 2.0f
+            // val quadrantSize = size / 2.0f
             val xMinValue = values.map { it.x }.min()
             val yMinValue = yMinDefaultValue ?:  values.map { it.y }.min()
             val xMaxValue = values.map { it.x }.max()
