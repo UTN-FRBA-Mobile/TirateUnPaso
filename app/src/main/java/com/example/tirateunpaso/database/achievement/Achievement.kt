@@ -1,10 +1,10 @@
-package com.example.tirateunpaso.database.entities
+package com.example.tirateunpaso.database.achievement
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "achievements")
 data class Achievement(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "title", defaultValue = "") val title: String,

@@ -1,10 +1,10 @@
-package com.example.tirateunpaso.database.daos
+package com.example.tirateunpaso.database.user
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.tirateunpaso.database.entities.User
+import com.example.tirateunpaso.database.user.User
 
 
 @Dao

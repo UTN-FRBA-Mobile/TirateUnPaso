@@ -4,29 +4,28 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.tirateunpaso.database.daos.AchievementDao
-import com.example.tirateunpaso.database.daos.UserDao
-import com.example.tirateunpaso.database.entities.Achievement
-import com.example.tirateunpaso.database.entities.User
+import com.example.tirateunpaso.database.achievement.AchievementDao
+import com.example.tirateunpaso.database.achievement.Achievement
 
-@Database(entities = [Achievement::class, User::class], version = 1)
-abstract class AppDatabase : RoomDatabase() {
+
+/**
+ * Database class with a singleton Instance object.
+ */
+@Database(entities = [Achievement::class], version = 1, exportSchema = false)
+abstract class InventoryDatabase : RoomDatabase() {
+
     abstract fun achievementDao(): AchievementDao
-    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile
-        private var INSTANCE: AppDatabase? = null
+        private var Instance: InventoryDatabase? = null
 
-        fun getInstance(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "app_database"
-                ).build()
-                INSTANCE = instance
-                instance
+        fun getDatabase(context: Context): InventoryDatabase {
+            // if the Instance is not null, return it, otherwise create a new database instance.
+            return Instance ?: synchronized(this) {
+                Room.databaseBuilder(context, InventoryDatabase::class.java, "achievement_database")
+                    .build()
+                    .also { Instance = it }
             }
         }
     }

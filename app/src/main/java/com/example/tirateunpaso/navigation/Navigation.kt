@@ -7,7 +7,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.tirateunpaso.database.AppDatabase
 import com.example.tirateunpaso.ui.screens.LoginScreen
 import com.example.tirateunpaso.ui.screens.HomeScreen
 import com.example.tirateunpaso.ui.routes
@@ -48,6 +47,7 @@ fun TirateUnPasoNavigation(navHostController: NavHostController) {
                         )
                     },
                     onSignUpClick = {
+
                         navHostController.navigate(
                             routes.app_flow
                         ){

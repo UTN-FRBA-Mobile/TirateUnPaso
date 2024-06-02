@@ -1,4 +1,4 @@
-package com.example.tirateunpaso.database.entities
+package com.example.tirateunpaso.database.user
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
