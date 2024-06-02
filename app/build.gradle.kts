@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -59,6 +60,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,5 +71,16 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     //noinspection UseTomlInstead
     implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Room components
+    val room_version = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+
+    implementation("androidx.room:room-ktx:$room_version")
+
+    // To use Kotlin Symbol Processing (KSP)
+    ksp("androidx.room:room-compiler:$room_version")
 
 }

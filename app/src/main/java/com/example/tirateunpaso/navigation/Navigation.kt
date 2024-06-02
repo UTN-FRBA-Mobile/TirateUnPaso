@@ -47,6 +47,7 @@ fun TirateUnPasoNavigation(navHostController: NavHostController) {
                         )
                     },
                     onSignUpClick = {
+
                         navHostController.navigate(
                             routes.app_flow
                         ){

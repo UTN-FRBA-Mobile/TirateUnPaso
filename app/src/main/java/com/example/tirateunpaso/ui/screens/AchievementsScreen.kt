@@ -12,27 +12,35 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.tirateunpaso.ui.components.Content
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tirateunpaso.ui.components.ExpandableCard
 import com.example.tirateunpaso.ui.values
+import com.example.tirateunpaso.ui.viewmodels.AchievementViewModel
+import com.example.tirateunpaso.ui.viewmodels.AppViewModelProvider
+import com.example.tirateunpaso.ui.viewmodels.asListContent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-val contentList = listOf(
-    Content(0,"Caminar 1000 pasos", true, "1000 / 1000"),
-    Content(1,"Caminar 300 kilómetros", false, "251 / 300"),
-    Content(2,"Quemar 700 calorías", false, "445 / 700"),
-    Content(3,"Invitar a 5 amigos", false, "0 / 5"),
-    Content(4,"Usar la app durante 30 días consecutivos", false, "18 / 30")
-)
 @Composable
 fun AchievementsScreen(
     onHomeClick:() -> Unit,
+    viewModel: AchievementViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.viewModelScope.launch(Dispatchers.IO) {
+            viewModel.retrieveAchievements()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -52,13 +60,13 @@ fun AchievementsScreen(
         Spacer(modifier = Modifier.height(values.defaultSpacing))
 
         var expandedItem by remember {
-            mutableStateOf(-1)
+            mutableIntStateOf(-1)
         }
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn {
-                items(contentList){
+                items(viewModel.achievementsUiState.achievements.asListContent()){
                         content ->
                     ExpandableCard(
                         content = content,
