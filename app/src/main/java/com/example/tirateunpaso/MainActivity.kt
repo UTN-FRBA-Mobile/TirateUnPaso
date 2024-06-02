@@ -8,8 +8,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tirateunpaso.navigation.TirateUnPasoNavigation
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             TirateUnPaso()
         }
