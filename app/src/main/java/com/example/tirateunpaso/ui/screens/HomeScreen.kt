@@ -11,6 +11,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,13 +20,17 @@ import com.example.tirateunpaso.ui.components.BottomButton
 import com.example.tirateunpaso.ui.components.CircularButton
 import com.example.tirateunpaso.ui.components.HeaderText
 import com.example.tirateunpaso.ui.values
+import com.example.tirateunpaso.viewmodel.StepCounterVM
 
 @Composable
 fun HomeScreen(
     onLogoutClick:() -> Unit,
     onStatisticsClick: () -> Unit,
-    onAchievementsClick: () -> Unit
+    onAchievementsClick: () -> Unit,
+    stepCounterVM : StepCounterVM
 ) {
+    val uiState by stepCounterVM.uiState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +55,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(values.defaultSpacing))
         CircularButton(
             onClick = onStatisticsClick,
-            number = 1000,
+            number = uiState.stepCount,
             measure = "pasos dados"
         )
         Spacer(modifier = Modifier.height(values.defaultSpacing))
@@ -72,8 +78,10 @@ fun HomeScreen(
 
 }
 
+/*
 @Preview(showSystemUi = true)
 @Composable
 fun DefaultHomePreview() {
     HomeScreen({},{},{})
 }
+ */

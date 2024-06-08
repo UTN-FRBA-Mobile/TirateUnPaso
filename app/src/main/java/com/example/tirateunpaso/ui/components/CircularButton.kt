@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CircularButton(
     onClick: () -> Unit,
-    number: Number,
+    number: Long,
     measure: String
 ) {
     OutlinedButton(

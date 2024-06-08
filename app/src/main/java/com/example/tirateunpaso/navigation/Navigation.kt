@@ -13,9 +13,11 @@ import com.example.tirateunpaso.ui.routes
 import com.example.tirateunpaso.ui.screens.AchievementsScreen
 import com.example.tirateunpaso.ui.screens.SignUpScreen
 import com.example.tirateunpaso.ui.screens.StatisticsScreen
+import com.example.tirateunpaso.ui.screens.StepCounterScreen
+import com.example.tirateunpaso.viewmodel.StepCounterVM
 
 @Composable
-fun TirateUnPasoNavigation(navHostController: NavHostController) {
+fun TirateUnPasoNavigation(navHostController: NavHostController, stepCounterVM : StepCounterVM) {
     NavHost(
         navController = navHostController,
         startDestination = routes.login_flow
@@ -79,8 +81,11 @@ fun TirateUnPasoNavigation(navHostController: NavHostController) {
                         navHostController.navigateToSingleTop(
                             routes.achievements
                         )
-                    }
+                    },
+                    stepCounterVM
                 )
+
+                // StepCounterScreen(stepCounterVM)
             }
             composable(route = routes.achievements){
                 AchievementsScreen(
