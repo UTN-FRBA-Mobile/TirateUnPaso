@@ -61,7 +61,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(values.defaultSpacing))
         CircularButton(
             onClick = onStatisticsClick,
-            number = 1000,
+            number = uiState.stepCount/1449,
             measure = "km recorridos"
         )
     }
