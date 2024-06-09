@@ -233,10 +233,11 @@ fun StepsCard(stepsToday: Int) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_running),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.FillHeight, // FillHeight para no cortar contenido
+                    alignment = Alignment.TopCenter, // imagen en la parte superior
                     modifier = Modifier.fillMaxSize()
                 )
-                Box( //Box que contiene la el texto blanco con fondo gris
+                Box( // Box que contiene el texto blanco con fondo gris
                     modifier = Modifier
                         .fillMaxSize()
                         .offset(x = (-4).dp)
@@ -245,9 +246,9 @@ fun StepsCard(stepsToday: Int) {
                 ) {
                     Box(
                         modifier = Modifier
-                            .background(Color(0xAA000000), shape = RoundedCornerShape(8.dp))
-                            .padding(vertical = 4.dp, horizontal = 4.dp)
-                            .clickable(onClick = { /* No hacer nada */ }), // esto es por si dsp queremos agregar algo
+                            .background(Color.Black.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))
+                            .padding(vertical = 4.dp, horizontal = 2.dp)
+                            .clickable(onClick = { /* No hacer nada */ }), // Esto es por si después queremos agregar algo
                         contentAlignment = Alignment.Center
                     ) {
                         Column(
