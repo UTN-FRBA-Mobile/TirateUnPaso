@@ -3,21 +3,34 @@ package com.example.tirateunpaso.database.user
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.tirateunpaso.database.user.User
-
+import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM user")
-    fun getAll(): List<User>
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertOne(user: User)
 
-    @Query("SELECT * FROM user WHERE id IN (:userIds)")
-    fun loadAllByIds(userIds: IntArray): List<User>
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertMany(vararg users: User)
 
-    @Insert
-    fun insertAll(vararg users: User)
+    @Update
+    suspend fun updateOne(user: User)
 
     @Delete
-    fun delete(user: User)
+    suspend fun deleteOne(user: User)
+
+    @Query("SELECT * from users WHERE id = :id")
+    fun getOne(id: Int): Flow<User>
+
+    @Query("SELECT * from users ORDER BY id ASC")
+    fun getAllStream(): Flow<List<User>>
+
+    @Query("SELECT * from users ORDER BY id ASC")
+    fun getAllList(): List<User>
+
+    @Query("DELETE FROM users")
+    fun deleteAll()
 }

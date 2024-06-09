@@ -20,10 +20,16 @@ import kotlinx.coroutines.launch
  */
 object AppViewModelProvider {
     val Factory = viewModelFactory {
-        // Initializer for AchievementEditViewModel
+        // Initializer for AchievementViewModel
         initializer {
             AchievementViewModel(
-                inventoryApplication().container.achievementsRepository
+                tirateUnPasoApplication().container.achievementsRepository
+            )
+        }
+        // Initializer for SignUpViewModel
+        initializer {
+            SignUpViewModel(
+                tirateUnPasoApplication().container.usersRepository
             )
         }
     }
@@ -31,7 +37,7 @@ object AppViewModelProvider {
 
 /**
  * Extension function to queries for [Application] object and returns an instance of
- * [InventoryApplication].
+ * [TirateUnPasoApplication].
  */
-fun CreationExtras.inventoryApplication(): TirateUnPasoApplication =
+fun CreationExtras.tirateUnPasoApplication(): TirateUnPasoApplication =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as TirateUnPasoApplication)

@@ -39,20 +39,26 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tirateunpaso.R
 import com.example.tirateunpaso.ui.components.HeaderText
 import com.example.tirateunpaso.ui.components.LoginFooter
 import com.example.tirateunpaso.ui.components.LoginTextField
 import com.example.tirateunpaso.ui.values
 import com.example.tirateunpaso.ui.values.defaultPadding
+import com.example.tirateunpaso.ui.viewmodels.AchievementViewModel
+import com.example.tirateunpaso.ui.viewmodels.AppViewModelProvider
+import com.example.tirateunpaso.ui.viewmodels.SignUpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
     onSignUpClick:() -> Unit,
-    onLoginClick:() -> Unit
+    onLoginClick:() -> Unit,
+    viewModel: SignUpViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
 
+    /*
     val (username,setUsername) = rememberSaveable {
         mutableStateOf("")
     }
@@ -92,7 +98,7 @@ fun SignUpScreen(
     var matchingPasswords by remember {
         mutableStateOf(false)
     }
-
+*/
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -109,7 +115,7 @@ fun SignUpScreen(
             text = "Da tu primer paso",
             modifier = Modifier.padding(vertical = defaultPadding)
         )
-        AnimatedVisibility(visible = !matchingPasswords) {
+        AnimatedVisibility(visible = !viewModel.signUpUiState.matchingPasswords) {
             Text(
                 text = "Las contraseñas ingresadas no coinciden",
                 color = MaterialTheme.colorScheme.error
@@ -117,22 +123,22 @@ fun SignUpScreen(
         }
 
         LoginTextField(
-            value = username,
-            onValueChange = setUsername,
+            value = viewModel.signUpUiState.username,
+            onValueChange = viewModel::setUsername,
             labelText = "Nombre de usuario",
             leadingIcon = Icons.Default.AccountCircle,
             modifier = Modifier.fillMaxWidth()
         )
         LoginTextField(
-            value = email,
-            onValueChange = setEmail,
+            value = viewModel.signUpUiState.email,
+            onValueChange = viewModel::setEmail,
             labelText = "Correo electrónico",
             leadingIcon = Icons.Default.Email,
             modifier = Modifier.fillMaxWidth()
         )
         LoginTextField(
-            value = password,
-            onValueChange = setPassword,
+            value = viewModel.signUpUiState.password,
+            onValueChange = viewModel::setPassword,
             labelText = "Contraseña",
             leadingIcon = Icons.Default.Lock,
             modifier = Modifier.fillMaxWidth(),
@@ -140,8 +146,8 @@ fun SignUpScreen(
             visualTransformation = PasswordVisualTransformation()
         )
         LoginTextField(
-            value = secondPassword,
-            onValueChange = setSecondPassword,
+            value = viewModel.signUpUiState.secondPassword,
+            onValueChange = viewModel::setSecondPassword,
             labelText = "Repetí tu contraseña",
             leadingIcon = Icons.Default.Lock,
             modifier = Modifier.fillMaxWidth(),
@@ -149,50 +155,46 @@ fun SignUpScreen(
             visualTransformation = PasswordVisualTransformation()
         )
         LoginTextField(
-            value = age,
-            onValueChange = setAge,
+            value = viewModel.signUpUiState.age,
+            onValueChange = viewModel::setAge,
             labelText = "Edad",
             leadingIcon = Icons.Default.DateRange,
             modifier = Modifier.fillMaxWidth()
         )
         LoginTextField(
-            value = height,
-            onValueChange = setHeight,
+            value = viewModel.signUpUiState.height,
+            onValueChange = viewModel::setHeight,
             labelText = "Altura",
             leadingIcon = Icons.Default.Person,
             modifier = Modifier.fillMaxWidth()
         )
 
         ExposedDropdownMenuBox(
-            expanded = isExpanded,
-            onExpandedChange = {isExpanded = !isExpanded}
+            expanded = viewModel.signUpUiState.isExpanded,
+            onExpandedChange = viewModel::setIsExpanded
         ) {
             TextField(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
-                value = sex,
+                value = viewModel.signUpUiState.sex,
                 onValueChange = {},
                 readOnly = true,
                 shape = RoundedCornerShape(30),
                 trailingIcon = {ExposedDropdownMenuDefaults.
-                    TrailingIcon(expanded = isExpanded)}
+                    TrailingIcon(expanded = viewModel.signUpUiState.isExpanded)}
             )
 
             ExposedDropdownMenu(
-                expanded = isExpanded,
+                expanded = viewModel.signUpUiState.isExpanded,
                 modifier = Modifier.fillMaxWidth(),
-                onDismissRequest = { isExpanded = false }) {
-                sexList.forEachIndexed { index, text ->
+                onDismissRequest = { viewModel.setIsExpanded(false) }) {
+                viewModel.signUpUiState.sexList.forEachIndexed { index, text ->
                     DropdownMenuItem(
                         text = { Text(text = text) },
                         onClick = {
-                            sex = if (index == 0){
-                                sexList[3]
-                            }else {
-                                sexList[index]
-                            }
-                            isExpanded = false
+                            viewModel.setSex(index)
+                            viewModel.setIsExpanded(false)
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
@@ -202,13 +204,12 @@ fun SignUpScreen(
 
         Button(
             onClick = {
-                matchingPasswords = password == secondPassword
-                if(matchingPasswords){
-                    onSignUpClick()
-                }
+                viewModel.verifyMatchingPasswords(
+                    onSignUpClick
+                )
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = fieldsCompleted
+            enabled = viewModel.fieldsCompleted()
         ){
             Text(
                 text = "Registrarte",
