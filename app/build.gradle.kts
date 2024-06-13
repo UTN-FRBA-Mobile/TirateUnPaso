@@ -68,6 +68,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     //noinspection UseTomlInstead
+    implementation("androidx.health.connect:connect-client:1.1.0-alpha07")
+    //noinspection UseTomlInstead
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
 }

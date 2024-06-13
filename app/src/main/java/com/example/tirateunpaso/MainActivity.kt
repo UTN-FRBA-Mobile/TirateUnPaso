@@ -12,6 +12,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.health.connect.client.HealthConnectClient
+import androidx.health.connect.client.PermissionController
+import androidx.health.connect.client.permission.HealthPermission
+import androidx.health.connect.client.records.StepsRecord
 import androidx.navigation.compose.rememberNavController
 import com.example.tirateunpaso.navigation.TirateUnPasoNavigation
 import com.example.tirateunpaso.viewmodel.StepCounterVM
@@ -36,20 +41,63 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private val VM : StepCounterVM by viewModels()
 
+    val PERMISSIONS =
+        setOf(
+            HealthPermission.getReadPermission(StepsRecord::class),
+            HealthPermission.getWritePermission(StepsRecord::class)
+        )
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val availabilityStatus = HealthConnectClient.getSdkStatus(applicationContext, "com.google.android.apps.healthdata")
+        if (availabilityStatus == HealthConnectClient.SDK_UNAVAILABLE) {
+            return // early return as there is no viable integration
+        }
+        if (availabilityStatus == HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED) {
+            return
+        }
+        val healthConnectClient = HealthConnectClient.getOrCreate(applicationContext)
+
+
+
+        val requestPermissionActivityContract = PermissionController.createRequestPermissionResultContract()
+
+        val requestPermissions = registerForActivityResult(requestPermissionActivityContract) { granted ->
+            if (granted.containsAll(PERMISSIONS)) {
+                // Permissions successfully granted
+            } else {
+                // Lack of required permissions
+            }
+        }
+
+        suspend fun checkPermissionsAndRun(healthConnectClient: HealthConnectClient) {
+            val granted = healthConnectClient.permissionController.getGrantedPermissions()
+            if (granted.containsAll(PERMISSIONS)) {
+                // Permissions already granted; proceed with inserting or reading data
+            } else {
+                requestPermissions.launch(PERMISSIONS)
+            }
+        }
+
+
 
         loadData()
         appCreated = true
 
         setContent {
+            LaunchedEffect(key1 = true) {
+                checkPermissionsAndRun(healthConnectClient)
+            }
             TirateUnPaso(VM)
         }
-        requestPermissions(arrayOf(Manifest.permission.ACTIVITY_RECOGNITION), REQUEST_CODE_PERMISSIONS) // Request permission if needed
+        //requestPermissions(arrayOf(Manifest.permission.ACTIVITY_RECOGNITION), REQUEST_CODE_PERMISSIONS) // Request permission if needed
     }
 
     override fun onResume(){
         super.onResume()
+
         if (stepSensor == null){
             Toast.makeText(this, "This device has no step sensor", Toast.LENGTH_SHORT).show()
         }
@@ -69,7 +117,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         super.onDestroy()
     }
 
-    override fun onSensorChanged(event: SensorEvent?) {
+    override fun onSensorChanged(event: SensorEvent?    ) {
         if (event!!.sensor.getType() == Sensor.TYPE_STEP_COUNTER){
             sensorSteps = event.values[0].toLong()
             if(appCreated){
