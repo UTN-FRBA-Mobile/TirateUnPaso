@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var sensorCarry : Long = 0
     private var previousTotalSteps : Long = 0
     private var sensorSteps : Long = 0
-    private var stepsThisSession : Long = 0
 
     private val VM : StepCounterVM by viewModels()
 
@@ -54,10 +53,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             HealthPermission.getReadPermission(StepsRecord::class),
             HealthPermission.getWritePermission(StepsRecord::class)
         )
-
-    private val healthConnectClient : HealthConnectClient by lazy {
-        HealthConnectClient.getOrCreate(applicationContext)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +64,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         if (availabilityStatus == HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED) {
             return
         }
+        val healthConnectClient = HealthConnectClient.getOrCreate(applicationContext)
 
         val requestPermissionActivityContract = PermissionController.createRequestPermissionResultContract()
 
@@ -115,7 +111,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onPause(){
         super.onPause()
-        saveData(stepsThisSession)
+        saveData()
         sensorManager.unregisterListener(this)
     }
 
@@ -139,13 +135,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     fun resetSteps(){
         currentSteps = 0
         sensorCarry = sensorSteps
-        saveData(0)
+        saveData()
     }
 
-    suspend fun insertSteps(healthConnectClient: HealthConnectClient, steps: Long) {
+    suspend fun insertSteps(healthConnectClient: HealthConnectClient) {
         try {
             val stepsRecord = StepsRecord(
-                count = steps,
+                count = 120,
                 startTime = Instant.now().minusSeconds(100),
                 endTime = Instant.now(),
                 startZoneOffset = null,
@@ -157,10 +153,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
-    fun saveData(steps: Long){
-        GlobalScope.launch {
-            insertSteps(healthConnectClient, steps)
-        }
+
+    fun saveData(){
+        val sharedPref = getSharedPreferences("stepCounterPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putLong("key1", currentSteps)
+        editor.apply()
     }
 
     fun loadData(){
