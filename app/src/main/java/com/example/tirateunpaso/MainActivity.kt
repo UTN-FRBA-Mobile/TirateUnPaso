@@ -7,6 +7,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.provider.Settings.Global
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -20,6 +21,12 @@ import androidx.health.connect.client.records.StepsRecord
 import androidx.navigation.compose.rememberNavController
 import com.example.tirateunpaso.navigation.TirateUnPasoNavigation
 import com.example.tirateunpaso.viewmodel.StepCounterVM
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.time.Instant
+import java.time.temporal.TemporalAmount
 
 private const val REQUEST_CODE_PERMISSIONS = 101
 
@@ -38,6 +45,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var sensorCarry : Long = 0
     private var previousTotalSteps : Long = 0
     private var sensorSteps : Long = 0
+    private var stepsThisSession : Long = 0
 
     private val VM : StepCounterVM by viewModels()
 
@@ -47,6 +55,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             HealthPermission.getWritePermission(StepsRecord::class)
         )
 
+    private val healthConnectClient : HealthConnectClient by lazy {
+        HealthConnectClient.getOrCreate(applicationContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +69,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         if (availabilityStatus == HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED) {
             return
         }
-        val healthConnectClient = HealthConnectClient.getOrCreate(applicationContext)
-
-
 
         val requestPermissionActivityContract = PermissionController.createRequestPermissionResultContract()
 
@@ -81,18 +89,17 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             }
         }
 
-
-
         loadData()
         appCreated = true
 
+        GlobalScope.launch {
+            checkPermissionsAndRun(healthConnectClient)
+        }
+
         setContent {
-            LaunchedEffect(key1 = true) {
-                checkPermissionsAndRun(healthConnectClient)
-            }
             TirateUnPaso(VM)
         }
-        //requestPermissions(arrayOf(Manifest.permission.ACTIVITY_RECOGNITION), REQUEST_CODE_PERMISSIONS) // Request permission if needed
+        requestPermissions(arrayOf(Manifest.permission.ACTIVITY_RECOGNITION), REQUEST_CODE_PERMISSIONS) // Request permission if needed
     }
 
     override fun onResume(){
@@ -108,7 +115,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onPause(){
         super.onPause()
-        saveData()
+        saveData(stepsThisSession)
         sensorManager.unregisterListener(this)
     }
 
@@ -132,14 +139,28 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     fun resetSteps(){
         currentSteps = 0
         sensorCarry = sensorSteps
-        saveData()
+        saveData(0)
     }
 
-    fun saveData(){
-        val sharedPref = getSharedPreferences("stepCounterPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putLong("key1", currentSteps)
-        editor.apply()
+    suspend fun insertSteps(healthConnectClient: HealthConnectClient, steps: Long) {
+        try {
+            val stepsRecord = StepsRecord(
+                count = steps,
+                startTime = Instant.now().minusSeconds(100),
+                endTime = Instant.now(),
+                startZoneOffset = null,
+                endZoneOffset = null,
+            )
+            healthConnectClient.insertRecords(listOf(stepsRecord))
+        } catch (e: Exception) {
+            // Run error handling here
+        }
+    }
+
+    fun saveData(steps: Long){
+        GlobalScope.launch {
+            insertSteps(healthConnectClient, steps)
+        }
     }
 
     fun loadData(){

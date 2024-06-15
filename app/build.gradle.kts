@@ -68,6 +68,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     //noinspection UseTomlInstead
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    //noinspection UseTomlInstead
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    //noinspection UseTomlInstead
     implementation("androidx.health.connect:connect-client:1.1.0-alpha07")
     //noinspection UseTomlInstead
     implementation("androidx.navigation:navigation-compose:2.7.7")
