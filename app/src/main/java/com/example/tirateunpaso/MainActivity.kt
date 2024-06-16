@@ -18,6 +18,8 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.StepsRecord
+import androidx.health.connect.client.request.AggregateRequest
+import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.navigation.compose.rememberNavController
 import com.example.tirateunpaso.navigation.TirateUnPasoNavigation
 import com.example.tirateunpaso.viewmodel.StepCounterVM
@@ -26,6 +28,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.temporal.TemporalAmount
 
 private const val REQUEST_CODE_PERMISSIONS = 101
@@ -40,11 +45,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
     }
 
-    private var appCreated = false
-    private var currentSteps : Long = 0
-    private var sensorCarry : Long = 0
-    private var previousTotalSteps : Long = 0
-    private var sensorSteps : Long = 0
+    private var todaySteps : Long = 0
+    private var sessionSteps : Long = 0
+    private var stepsStartSession : Long = 0
+    private var sessionStarted  = false
+    private var sessionStart : Instant = Instant.now()
 
     private val VM : StepCounterVM by viewModels()
 
@@ -53,6 +58,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             HealthPermission.getReadPermission(StepsRecord::class),
             HealthPermission.getWritePermission(StepsRecord::class)
         )
+
+    private val healthConnectClient : HealthConnectClient by lazy {
+        HealthConnectClient.getOrCreate(applicationContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +73,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         if (availabilityStatus == HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED) {
             return
         }
-        val healthConnectClient = HealthConnectClient.getOrCreate(applicationContext)
 
         val requestPermissionActivityContract = PermissionController.createRequestPermissionResultContract()
 
@@ -85,11 +93,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             }
         }
 
-        loadData()
-        appCreated = true
+        loadData() //TODO: no se si es necesario cargar la data aca, ya que se hace en onResume()
+        sessionStarted = true
 
         GlobalScope.launch {
-            checkPermissionsAndRun(healthConnectClient)
+            checkPermissionsAndRun(healthConnectClient) //TODO: los permisos deberian controlarse todo el tiempo
         }
 
         setContent {
@@ -100,18 +108,21 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onResume(){
         super.onResume()
-
         if (stepSensor == null){
             Toast.makeText(this, "This device has no step sensor", Toast.LENGTH_SHORT).show()
         }
         else{
             sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL)
         }
+        loadData()
+        sessionStarted = true
+        sessionStart = Instant.now()
     }
 
     override fun onPause(){
         super.onPause()
-        saveData()
+        //sessionSteps son todos los pasos que tiene registrado el sensor, stepsStartSession son los pasos que tenia cuando comenzo la sesion. Los pasos que di en esta sesion es la diferencia de ambos
+        saveData(sessionSteps - stepsStartSession)
         sensorManager.unregisterListener(this)
     }
 
@@ -122,27 +133,21 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?    ) {
         if (event!!.sensor.getType() == Sensor.TYPE_STEP_COUNTER){
-            sensorSteps = event.values[0].toLong()
-            if(appCreated){
-                appCreated = false
-                sensorCarry = sensorSteps
+            val sensorSteps = event.values[0].toLong()
+            if(sessionStarted){
+                sessionStarted = false
+                stepsStartSession = sensorSteps
             }
-            currentSteps = previousTotalSteps + sensorSteps - sensorCarry
-            VM.UpdateSteps(currentSteps)
+            sessionSteps = sensorSteps - stepsStartSession
+            VM.UpdateSteps(todaySteps + sessionSteps)
         }
     }
 
-    fun resetSteps(){
-        currentSteps = 0
-        sensorCarry = sensorSteps
-        saveData()
-    }
-
-    suspend fun insertSteps(healthConnectClient: HealthConnectClient) {
+    suspend fun insertSteps(healthConnectClient: HealthConnectClient, steps: Long, sessionStart: Instant) {
         try {
             val stepsRecord = StepsRecord(
-                count = 120,
-                startTime = Instant.now().minusSeconds(100),
+                count = steps,
+                startTime = sessionStart,
                 endTime = Instant.now(),
                 startZoneOffset = null,
                 endZoneOffset = null,
@@ -153,18 +158,44 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
+    suspend fun aggregateSteps(
+        healthConnectClient: HealthConnectClient,
+        startTime: Instant,
+        endTime: Instant
+    ) : Long {
+        try {
+            val response = healthConnectClient.aggregate(
+                AggregateRequest(
+                    metrics = setOf(StepsRecord.COUNT_TOTAL),
+                    timeRangeFilter = TimeRangeFilter.between(startTime, endTime)
+                )
+            )
+            // The result may be null if no data is available in the time range
+            val stepCount = response[StepsRecord.COUNT_TOTAL]
+            return stepCount!!
+        } catch (e: Exception) {
+            // Run error handling here
+            return 0
+        }
+    }
 
-    fun saveData(){
-        val sharedPref = getSharedPreferences("stepCounterPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putLong("key1", currentSteps)
-        editor.apply()
+    suspend fun getTodaySteps(healthConnectClient: HealthConnectClient) : Long{
+        val localDate = LocalDate.now()   // your current date time
+        val startOfDay: LocalDateTime = localDate.atStartOfDay() // date time at start of the date
+        val startOfDayInstant = startOfDay.atZone(ZoneId.systemDefault()).toInstant()
+        return aggregateSteps(healthConnectClient, startOfDayInstant, Instant.now())
+    }
+
+    fun saveData(steps: Long){
+        runBlocking {
+            insertSteps(healthConnectClient, steps, sessionStart)
+        }
     }
 
     fun loadData(){
-        val sharedPref = getSharedPreferences("stepCounterPrefs", Context.MODE_PRIVATE)
-        val savedNumber = sharedPref.getLong("key1", 0L)
-        previousTotalSteps = savedNumber
+        runBlocking {
+            todaySteps = getTodaySteps(healthConnectClient)
+        }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
