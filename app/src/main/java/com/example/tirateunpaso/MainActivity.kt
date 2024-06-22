@@ -7,13 +7,12 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.provider.Settings.Global
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
@@ -23,15 +22,12 @@ import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.navigation.compose.rememberNavController
 import com.example.tirateunpaso.navigation.TirateUnPasoNavigation
 import com.example.tirateunpaso.viewmodel.StepCounterVM
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.temporal.TemporalAmount
 
 private const val REQUEST_CODE_PERMISSIONS = 101
 
@@ -121,8 +117,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onPause(){
         super.onPause()
+        val steps = sessionSteps
         //sessionSteps son todos los pasos que tiene registrado el sensor, stepsStartSession son los pasos que tenia cuando comenzo la sesion. Los pasos que di en esta sesion es la diferencia de ambos
-        saveData(sessionSteps - stepsStartSession)
+        saveData(steps)
         sensorManager.unregisterListener(this)
     }
 
@@ -145,6 +142,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     suspend fun insertSteps(healthConnectClient: HealthConnectClient, steps: Long, sessionStart: Instant) {
         try {
+            if(steps < 1){
+                return
+            }
             val stepsRecord = StepsRecord(
                 count = steps,
                 startTime = sessionStart,
@@ -154,7 +154,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             )
             healthConnectClient.insertRecords(listOf(stepsRecord))
         } catch (e: Exception) {
-            // Run error handling here
+            Toast.makeText(this, "Error while saving steps", Toast.LENGTH_SHORT).show()
+            Log.e("HEALTCONNECTCLIENT", e.toString())
         }
     }
 
@@ -187,13 +188,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
     fun saveData(steps: Long){
-        runBlocking {
+        GlobalScope.launch {
             insertSteps(healthConnectClient, steps, sessionStart)
         }
     }
 
     fun loadData(){
-        runBlocking {
+        GlobalScope.launch {
             todaySteps = getTodaySteps(healthConnectClient)
         }
     }
