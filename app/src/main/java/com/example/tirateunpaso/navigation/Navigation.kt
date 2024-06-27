@@ -20,7 +20,7 @@ import com.example.tirateunpaso.viewmodel.StepCounterVM
 fun TirateUnPasoNavigation(navHostController: NavHostController, stepCounterVM : StepCounterVM) {
     NavHost(
         navController = navHostController,
-        startDestination = routes.login_flow
+        startDestination = routes.app_flow
     ){
         navigation(startDestination = routes.login, route = routes.login_flow){
             composable(route = routes.login){
