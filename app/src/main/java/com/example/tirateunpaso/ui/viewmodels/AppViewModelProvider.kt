@@ -16,14 +16,14 @@ import com.example.tirateunpaso.database.achievement.AchievementsRepository
 import kotlinx.coroutines.launch
 
 /**
- * Provides Factory to create instance of ViewModel for the entire Inventory app
+ * Provides Factory to create instance of ViewModel for the entire app
  */
 object AppViewModelProvider {
     val Factory = viewModelFactory {
-        // Initializer for AchievementEditViewModel
+        // Initializer for AchievementViewModel
         initializer {
             AchievementViewModel(
-                inventoryApplication().container.achievementsRepository
+                tirateUnPasoApplication().container.achievementsRepository
             )
         }
     }
@@ -31,7 +31,7 @@ object AppViewModelProvider {
 
 /**
  * Extension function to queries for [Application] object and returns an instance of
- * [InventoryApplication].
+ * [TirateUnPasoApplication].
  */
-fun CreationExtras.inventoryApplication(): TirateUnPasoApplication =
+fun CreationExtras.tirateUnPasoApplication(): TirateUnPasoApplication =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as TirateUnPasoApplication)

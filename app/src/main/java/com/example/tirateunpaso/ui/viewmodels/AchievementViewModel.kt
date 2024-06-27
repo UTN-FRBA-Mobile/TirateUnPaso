@@ -16,18 +16,6 @@ class AchievementViewModel(
         private set
 
     suspend fun retrieveAchievements() {
-
-        achievementsRepository.deleteAll()
-
-        achievementsRepository.insertMany(
-            Achievement(0,"Caminar 1000 pasos", 1000, 1000, true),
-            Achievement(1,"Caminar 2000 pasos", 1000, 2000, false),
-            Achievement(2,"Caminar 300 kilómetros", 251, 300, false),
-            Achievement(3,"Quemar 700 calorías",  445, 700, false),
-            Achievement(4,"Invitar a 5 amigos", 0, 5, false),
-            Achievement(5,"Usar la app durante 30 días consecutivos", 18, 30, false)
-        )
-
         achievementsUiState = AchievementsUiState(achievementsRepository.getAllList())
     }
 }
@@ -41,5 +29,5 @@ data class AchievementsUiState(
 
 fun List<Achievement>.asListContent(): List<Content> =
     this.map { a: Achievement ->
-        Content(a.id, a.title, a.unlocked, "%d / %d".format(a.actualScore, a.requiredScore))
+        Content(a.id, a.title, a.actualScore >= a.requiredScore, "%d / %d".format(a.actualScore, a.requiredScore))
     }

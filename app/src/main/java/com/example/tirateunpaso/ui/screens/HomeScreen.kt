@@ -14,14 +14,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tirateunpaso.ui.components.BottomButton
 import com.example.tirateunpaso.ui.components.CircularButton
 import com.example.tirateunpaso.ui.components.HeaderText
 import com.example.tirateunpaso.ui.values
+import com.example.tirateunpaso.ui.viewmodels.AchievementViewModel
+import com.example.tirateunpaso.ui.viewmodels.AppViewModelProvider
 
 @Composable
 fun HomeScreen(
-    onLogoutClick:() -> Unit,
+    onShowHealthAdviceClick: () -> Unit,
     onStatisticsClick: () -> Unit,
     onAchievementsClick: () -> Unit
 ) {
@@ -34,11 +37,11 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = onLogoutClick,
+            onClick = onShowHealthAdviceClick,
             modifier = Modifier.align(alignment = Alignment.Start),
         ){
             Text(
-                text = "Cerrar sesión",
+                text = "Consejo Salud",
                 fontSize = values.fontsize
             )
         }
