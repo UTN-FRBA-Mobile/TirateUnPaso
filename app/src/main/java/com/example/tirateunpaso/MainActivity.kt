@@ -60,6 +60,7 @@ class MainActivity : ComponentActivity() {
             }
 
             opNotification?.let { notification ->
+                cancel(1)
                 notify(1, notification)
             }
         }
