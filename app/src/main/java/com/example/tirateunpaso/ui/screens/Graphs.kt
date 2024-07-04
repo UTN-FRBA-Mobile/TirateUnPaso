@@ -207,62 +207,65 @@ class GraphViewModel : ViewModel() {
 // CARD DE PASOS DE HOY
 @Composable
 fun StepsCard(stepsToday: Int) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .shadow(
-                elevation = 16.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
-    ) {
-        ChartCard {
-            // ChartTitle("Pasos de hoy")
-
-            Box( // box de la imagen
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_running),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillHeight, // FillHeight para no cortar contenido
-                    alignment = Alignment.TopCenter, // imagen en la parte superior
-                    modifier = Modifier.fillMaxSize()
+    TirateUnPasoTheme { // Envolver en el tema principal de la aplicación
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .shadow(
+                    elevation = 16.dp,
+                    shape = RoundedCornerShape(8.dp)
                 )
-                Box( // Box que contiene el texto blanco con fondo gris
+        ) {
+            ChartCard {
+                // ChartTitle("Pasos de hoy")
+
+                Box( // box de la imagen
                     modifier = Modifier
-                        .fillMaxSize()
-                        .offset(x = (-4).dp)
-                        .offset(y = (-12).dp),
-                    contentAlignment = Alignment.Center
+                        .fillMaxWidth()
+                        .height(250.dp)
+                        .background(color = MaterialTheme.colorScheme.tertiary)
                 ) {
-                    Box(
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_running),
+                        contentDescription = null,
+                        contentScale = ContentScale.FillHeight, // FillHeight para no cortar contenido
+                        alignment = Alignment.TopCenter, // imagen en la parte superior
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    Box( // Box que contiene el texto blanco con fondo gris
                         modifier = Modifier
-                            .background(Color.Black.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))
-                            .padding(vertical = 4.dp, horizontal = 2.dp)
-                            .clickable(onClick = { /* No hacer nada */ }), // Esto es por si después queremos agregar algo
+                            .fillMaxSize()
+                            .offset(x = (-4).dp)
+                            .offset(y = (-12).dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        Box(
+                            modifier = Modifier
+                                .background(Color.Black.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))
+                                .padding(vertical = 4.dp, horizontal = 2.dp)
+                                .clickable(onClick = { /* No hacer nada */ }), // Esto es por si después queremos agregar algo
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = "PASOS HOY",
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
-                                ),
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            Text(
-                                text = "$stepsToday",
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "PASOS HOY",
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    ),
+                                    modifier = Modifier.padding(bottom = 4.dp)
                                 )
-                            )
+                                Text(
+                                    text = "$stepsToday",
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                )
+                            }
                         }
                     }
                 }
