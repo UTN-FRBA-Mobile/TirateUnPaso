@@ -60,7 +60,7 @@ fun GraphScreen(viewModel: GraphViewModel = viewModel()) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState()), // para que haya scroll
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         StepsCard(stepsToday = stepsToday)
