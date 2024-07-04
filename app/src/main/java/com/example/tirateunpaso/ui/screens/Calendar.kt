@@ -1,5 +1,6 @@
 package com.example.tirateunpaso.ui.screens
 
+import TirateUnPasoTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -114,190 +116,195 @@ fun CalendarScreen(viewModel: CalendarViewModel = remember { CalendarViewModel()
         viewModel.changeMonthYear(newMonth, newYear)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp)
-    ) {
-        // Tarjeta para el calendario
-        Card(
+    TirateUnPasoTheme {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .border(
-                    width = 2.dp,
-                    color = LightBlueGradientEnd,
-                    shape = RoundedCornerShape(16.dp)
-                ),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = LightBlueCard.copy(alpha = 0.5f))
+                .fillMaxSize()
+                .padding(8.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 16.dp, start = 6.dp, end = 6.dp)
+            // Tarjeta para el calendario
+            Card(
+                modifier = Modifier.fillMaxWidth()
+                    .shadow(
+                        elevation = 16.dp,
+                        shape = RoundedCornerShape(16.dp))
+                /*
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(8.dp)
+                ) */,
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                // Encabezado con el nombre del mes y botones de navegación
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp, bottom = 16.dp, start = 6.dp, end = 6.dp)
                 ) {
-                    IconButton(
-                        onClick = { monthNavigation(-1) },
-                        modifier = Modifier.size(48.dp)
+                    // Encabezado con el nombre del mes y botones de navegación
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(36.dp)
-                                .clip(CircleShape)
-                                .background(BlueFrance)
-                                .border(2.dp, LightBlueGradientStart, CircleShape),
-                            contentAlignment = Alignment.Center
+                        IconButton(
+                            onClick = { monthNavigation(-1) },
+                            modifier = Modifier.size(48.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Mes anterior",
-                                tint = Color.White
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.tertiary)
+                                    .border(2.dp, MaterialTheme.colorScheme.secondary, CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Mes anterior",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+
+                        Text(
+                            text = "${viewModel.getCurrentMonthName()} ${viewModel.selectedYear.value}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.weight(1f),
+                            textAlign = TextAlign.Center
+                        )
+
+                        IconButton(
+                            onClick = { monthNavigation(1) },
+                            modifier = Modifier.size(48.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.tertiary)
+                                    .border(2.dp, MaterialTheme.colorScheme.secondary, CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowForward,
+                                    contentDescription = "Próximo mes",
+                                    tint = Color.White
+                                )
+                            }
                         }
                     }
 
-                    Text(
-                        text = "${viewModel.getCurrentMonthName()} ${viewModel.selectedYear.value}",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        color = BlueFrance,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center
-                    )
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                    IconButton(
-                        onClick = { monthNavigation(1) },
-                        modifier = Modifier.size(48.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(36.dp)
-                                .clip(CircleShape)
-                                .background(BlueFrance)
-                                .border(2.dp, LightBlueGradientStart, CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowForward,
-                                contentDescription = "Próximo mes",
-                                tint = Color.White
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Encabezados de los días de la semana
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    listOf("DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB").forEach { day ->
-                        Box(
-                            modifier = Modifier.weight(1f).padding(4.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = day,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                color = BlueFrance,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Mostrar los días del mes en formato de calendario
-                val daysOfMonth = viewModel.getDaysOfMonth()
-                val firstDayOfMonth = viewModel.getFirstDayOfMonth()
-                val daysInWeek = 7
-                val today = viewModel.getToday()
-
-                // Lista de días rellenada con nulos para alinearse con el primer día correcto
-                val paddedDays = List(firstDayOfMonth - 1) { null } + daysOfMonth
-
-                // Asegurar que la última fila tenga exactamente 7 elementos
-                val totalCells = if (paddedDays.size % daysInWeek == 0) paddedDays.size
-                else paddedDays.size + (daysInWeek - paddedDays.size % daysInWeek)
-                val completeDays = paddedDays + List(totalCells - paddedDays.size) { null }
-
-                val chunkedDays = completeDays.chunked(daysInWeek)
-
-                chunkedDays.forEach { week ->
+                    // Encabezados de los días de la semana
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        week.forEach { day ->
-                            if (day != null) {
-                                val calendar = Calendar.getInstance().apply {
-                                    set(Calendar.YEAR, viewModel.selectedYear.value)
-                                    set(Calendar.MONTH, viewModel.selectedMonth.value)
-                                    set(Calendar.DAY_OF_MONTH, day)
-                                    set(Calendar.HOUR_OF_DAY, 0)
-                                    set(Calendar.MINUTE, 0)
-                                    set(Calendar.SECOND, 0)
-                                    set(Calendar.MILLISECOND, 0)
-                                }
+                        listOf("DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB").forEach { day ->
+                            Box(
+                                modifier = Modifier.weight(1f).padding(4.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = day,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    }
 
-                                // Obtener el valor del día desde viewModel.graphDataCalendar
-                                val value = viewModel.graphDataCalendar.value.firstOrNull {
-                                    val graphCalendar = Calendar.getInstance().apply {
-                                        time = it.date
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Mostrar los días del mes en formato de calendario
+                    val daysOfMonth = viewModel.getDaysOfMonth()
+                    val firstDayOfMonth = viewModel.getFirstDayOfMonth()
+                    val daysInWeek = 7
+                    val today = viewModel.getToday()
+
+                    // Lista de días rellenada con nulos para alinearse con el primer día correcto
+                    val paddedDays = List(firstDayOfMonth - 1) { null } + daysOfMonth
+
+                    // Asegurar que la última fila tenga exactamente 7 elementos
+                    val totalCells = if (paddedDays.size % daysInWeek == 0) paddedDays.size
+                    else paddedDays.size + (daysInWeek - paddedDays.size % daysInWeek)
+                    val completeDays = paddedDays + List(totalCells - paddedDays.size) { null }
+
+                    val chunkedDays = completeDays.chunked(daysInWeek)
+
+                    chunkedDays.forEach { week ->
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            week.forEach { day ->
+                                if (day != null) {
+                                    val calendar = Calendar.getInstance().apply {
+                                        set(Calendar.YEAR, viewModel.selectedYear.value)
+                                        set(Calendar.MONTH, viewModel.selectedMonth.value)
+                                        set(Calendar.DAY_OF_MONTH, day)
                                         set(Calendar.HOUR_OF_DAY, 0)
                                         set(Calendar.MINUTE, 0)
                                         set(Calendar.SECOND, 0)
                                         set(Calendar.MILLISECOND, 0)
                                     }
-                                    graphCalendar.time == calendar.time
-                                }?.value
 
-                                // Determinar el color de fondo y el color del texto según el valor
-                                val (backgroundColor, textColor) = if (value != null && value != 0) {
-                                    DarkBlue to Color.White
-                                } else {
-                                    Color.LightGray to Color.Black
-                                }
+                                    // Obtener el valor del día desde viewModel.graphDataCalendar
+                                    val value = viewModel.graphDataCalendar.value.firstOrNull {
+                                        val graphCalendar = Calendar.getInstance().apply {
+                                            time = it.date
+                                            set(Calendar.HOUR_OF_DAY, 0)
+                                            set(Calendar.MINUTE, 0)
+                                            set(Calendar.SECOND, 0)
+                                            set(Calendar.MILLISECOND, 0)
+                                        }
+                                        graphCalendar.time == calendar.time
+                                    }?.value
 
-                                // Determinar el color del borde y grosor para el día actual
-                                val borderColor = if (day == today) LightBlueGradientStart else Color.Transparent
-                                val borderWidth = if (day == today) 4.dp else 2.dp
+                                    // Determinar el color de fondo y el color del texto según el valor
+                                    val (backgroundColor, textColor) = if (value != null && value != 0) {
+                                        MaterialTheme.colorScheme.secondary to Color.White
+                                    } else {
+                                        Color.LightGray to Color.Black
+                                    }
 
-                                Box(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(4.dp)
-                                        .aspectRatio(1f) // Asegurar que el Box sea cuadrado
-                                        .background(backgroundColor)
-                                        .border(borderWidth, borderColor, RoundedCornerShape(0.dp))
-                                        .clickable { /* Acción al hacer clic en el día, ver qué hacemos */ },
-                                    contentAlignment = Alignment.Center
-                                )
-                                {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        Text(
-                                            text = day.toString(),
-                                            style = TextStyle(color = textColor)
-                                        )
-                                        if (value != null && value != 0) {
+                                    // Determinar el color del borde y grosor para el día actual
+                                    val borderColor = if (day == today) MaterialTheme.colorScheme.tertiary else Color.Transparent
+                                    val borderWidth = if (day == today) 4.dp else 2.dp
+
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(4.dp)
+                                            .aspectRatio(1f) // Asegurar que el Box sea cuadrado
+                                            .background(backgroundColor)
+                                            .border(borderWidth, borderColor, RoundedCornerShape(0.dp))
+                                            .clickable { /* Acción al hacer clic en el día, ver qué hacemos */ },
+                                        contentAlignment = Alignment.Center
+                                    )
+                                    {
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
                                             Text(
-                                                text = value.toString(),
-                                                style = TextStyle(fontSize = 10.sp, color = textColor)
+                                                text = day.toString(),
+                                                style = TextStyle(color = textColor)
                                             )
-                                        } else {
-                                            Spacer(modifier = Modifier.height(12.dp))
+                                            if (value != null && value != 0) {
+                                                Text(
+                                                    text = value.toString(),
+                                                    style = TextStyle(fontSize = 10.sp, color = textColor)
+                                                )
+                                            } else {
+                                                Spacer(modifier = Modifier.height(12.dp))
+                                            }
                                         }
                                     }
+                                } else {
+                                    // Añadir espacio vacío para los días nulos
+                                    Spacer(modifier = Modifier.weight(1f).padding(4.dp).aspectRatio(1f))
                                 }
-                            } else {
-                                // Añadir espacio vacío para los días nulos
-                                Spacer(modifier = Modifier.weight(1f).padding(4.dp).aspectRatio(1f))
                             }
                         }
                     }

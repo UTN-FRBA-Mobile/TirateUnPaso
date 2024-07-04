@@ -1,5 +1,6 @@
 package com.example.tirateunpaso.ui.screens
 
+import TirateUnPasoTheme
 import android.graphics.Paint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
@@ -201,14 +202,7 @@ class GraphViewModel : ViewModel() {
 }
 
 // -----------------------------------------------------------------------
-// Pantalla
-val DarkBlue = Color(0xFF002366) // Color botón.
-val LightBlueCard = Color(0xFFE3F2FD) // Celestito Cards
-val LightBlueGradientStart = Color(0xFF42A5F5) // Principio gradiente celeste claro
-val LightBlueGradientEnd = Color(0xFF1976D2) // Fin del gradiente celeste oscuro
-val DarkBlueGradientStart = Color(0xFF1976D2) // Principio del gradiente azul claro
-val DarkBlueGradientEnd = Color(0xFF42A5F5) // Fin del gradiente azul oscuro
-val BlueFrance = Color(0xFF01579B) // Azul francia para el valor de los totales
+// Pantallas
 
 // CARD DE PASOS DE HOY
 @Composable
@@ -280,42 +274,54 @@ fun StepsCard(stepsToday: Int) {
 // TÍTULO PARA CARD
 @Composable
 fun ChartTitle(title: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(28.dp)
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        LightBlueGradientStart,
-                        LightBlueGradientEnd
-                    )
+    TirateUnPasoTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(28.dp)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.tertiary,
+                            MaterialTheme.colorScheme.primary
+                        )
+                    ),
                 ),
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = title,
-            color = Color.White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = title,
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
     }
 }
 
 // CARD CELESTE
 @Composable
 fun ChartCard(content: @Composable () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth()
-            .shadow(
-                elevation = 16.dp,
-                shape = RoundedCornerShape(8.dp)),
-        colors = CardDefaults.cardColors(containerColor = LightBlueCard)
-    ) {
-        Column {
-            content()
+    TirateUnPasoTheme {
+        Card(
+            modifier = Modifier.fillMaxWidth()
+                /*
+                .shadow(
+                    elevation = 16.dp,
+                    shape = RoundedCornerShape(16.dp))
+
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(8.dp)
+                ) */,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Column(modifier = Modifier) {
+                content()
+            }
         }
     }
 }
@@ -327,80 +333,82 @@ fun BarChartH(title: String, data: List<GraphData>) {
     // Encontrar el valor máximo para escalar las barras
     val maxValue = data.maxOfOrNull { it.value } ?: 1
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .shadow(
-                elevation = 16.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
-    ) {
-        // Usa las funciones de card y title.
-        ChartCard {
-            ChartTitle(title)
+    TirateUnPasoTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .shadow(
+                    elevation = 16.dp,
+                    shape = RoundedCornerShape(8.dp)
+                )
+        ) {
+            // Usa las funciones de card y title.
+            ChartCard {
+                ChartTitle(title)
 
-            Column(modifier = Modifier.padding(16.dp)) {
-                data.forEach { item ->
-                    // Animar la barra según el valor relativo al máximo
-                    val animatedWidth by animateFloatAsState(
-                        targetValue = item.value.toFloat() / maxValue.toFloat(), label = ""
-                    )
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp)
-                    ) {
-                        // Mostrar la categoría
-                        Text(
-                            text = item.category,
-                            modifier = Modifier
-                                .padding(2.dp)
-                                .width(70.dp),
-                            textAlign = TextAlign.Center,
-                            color = Color.Gray,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 11.sp,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            style = TextStyle(lineHeight = 18.sp)
+                Column(modifier = Modifier.padding(16.dp)) {
+                    data.forEach { item ->
+                        // Animar la barra según el valor relativo al máximo
+                        val animatedWidth by animateFloatAsState(
+                            targetValue = item.value.toFloat() / maxValue.toFloat(), label = ""
                         )
 
-                        Spacer(modifier = Modifier.width(8.dp))
-                        // Dibujar la barra con el ancho animado
-                        Box(
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .height(20.dp)
-                                .widthIn(max = 160.dp)
-                                .background(
-                                    Brush.horizontalGradient(
-                                        colors = listOf(
-                                            LightBlueGradientStart,
-                                            LightBlueGradientEnd
-                                        )
-                                    ),
-                                    shape = RoundedCornerShape(4.dp)
-                                )
-                                .fillMaxWidth(fraction = animatedWidth)
-                                .shadow(
-                                    elevation = 8.dp,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        // Mostrar el valor
-                        Text(
-                            text = item.value.toString(),
-                            modifier = Modifier
-                                .width(60.dp)
-                                .align(Alignment.CenterVertically),
-                            color = DarkBlue,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Center
-                        )
+                                .fillMaxWidth()
+                                .padding(vertical = 10.dp)
+                        ) {
+                            // Mostrar la categoría
+                            Text(
+                                text = item.category,
+                                modifier = Modifier
+                                    .padding(2.dp)
+                                    .width(70.dp),
+                                textAlign = TextAlign.Center,
+                                color = Color.Gray,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 11.sp,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                style = TextStyle(lineHeight = 18.sp)
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+                            // Dibujar la barra con el ancho animado
+                            Box(
+                                modifier = Modifier
+                                    .height(20.dp)
+                                    .widthIn(max = 160.dp)
+                                    .background(
+                                        Brush.horizontalGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.primary,
+                                                MaterialTheme.colorScheme.secondary
+                                            )
+                                        ),
+                                        shape = RoundedCornerShape(4.dp)
+                                    )
+                                    .fillMaxWidth(fraction = animatedWidth)
+                                    .shadow(
+                                        elevation = 8.dp,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            // Mostrar el valor
+                            Text(
+                                text = item.value.toString(),
+                                modifier = Modifier
+                                    .width(60.dp)
+                                    .align(Alignment.CenterVertically),
+                                color = MaterialTheme.colorScheme.onSecondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
             }
@@ -413,83 +421,85 @@ fun BarChartV(title: String, data: List<GraphData>) {
     // Encontrar el valor máximo para escalar las barras
     val maxValue = data.maxOfOrNull { it.value } ?: 1
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .shadow(
-                elevation = 16.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
-    ) {
-        // Usa las funciones de card y title.
-        ChartCard {
-            ChartTitle(title)
+    TirateUnPasoTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .shadow(
+                    elevation = 16.dp,
+                    shape = RoundedCornerShape(8.dp)
+                )
+        ) {
+            // Usa las funciones de card y title.
+            ChartCard {
+                ChartTitle(title)
 
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                modifier = Modifier.padding(16.dp)
-            ) {
-                data.forEach { item ->
-                    // Animar la barra según el valor relativo al máximo
-                    val animatedHeight by animateFloatAsState(
-                        targetValue = item.value.toFloat() / maxValue.toFloat(), label = ""
-                    )
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    data.forEach { item ->
+                        // Animar la barra según el valor relativo al máximo
+                        val animatedHeight by animateFloatAsState(
+                            targetValue = item.value.toFloat() / maxValue.toFloat(), label = ""
+                        )
 
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .weight(1f) // Ajustar el ancho de cada barra proporcionalmente
-                            .padding(vertical = 4.dp),
-                        verticalArrangement = Arrangement.Bottom
-                    ) {
-                        // Mostrar el valor
-                        Text(
-                            text = item.value.toString(),
-                            textAlign = TextAlign.Center,
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
-                                .padding(top = 4.dp)
-                                .fillMaxWidth(),
-                            color = DarkBlue,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        // Dibujar la barra con la altura animada
-                        Box(
-                            modifier = Modifier
-                                .width(20.dp)
-                                .heightIn(max = 200.dp)
-                                .background(
-                                    Brush.verticalGradient(
-                                        colors = listOf(
-                                            DarkBlueGradientStart,
-                                            DarkBlueGradientEnd
-                                        )
-                                    ),
-                                    shape = RoundedCornerShape(4.dp)
-                                )
-                                .fillMaxHeight(fraction = animatedHeight)
-                                .shadow(
-                                    elevation = 8.dp,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        // Mostrar la categoría
-                        Text(
-                            text = item.category,
-                            modifier = Modifier
-                                .padding(2.dp)
-                                .width(70.dp),
-                            textAlign = TextAlign.Center,
-                            color = Color.Gray,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 11.sp,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            style = TextStyle(lineHeight = 18.sp)
-                        )
+                                .weight(1f) // Ajustar el ancho de cada barra proporcionalmente
+                                .padding(vertical = 4.dp),
+                            verticalArrangement = Arrangement.Bottom
+                        ) {
+                            // Mostrar el valor
+                            Text(
+                                text = item.value.toString(),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .padding(top = 4.dp)
+                                    .fillMaxWidth(),
+                                color = MaterialTheme.colorScheme.onSecondary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            // Dibujar la barra con la altura animada
+                            Box(
+                                modifier = Modifier
+                                    .width(20.dp)
+                                    .heightIn(max = 200.dp)
+                                    .background(
+                                        Brush.verticalGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.primary,
+                                                MaterialTheme.colorScheme.secondary
+                                            )
+                                        ),
+                                        shape = RoundedCornerShape(4.dp)
+                                    )
+                                    .fillMaxHeight(fraction = animatedHeight)
+                                    .shadow(
+                                        elevation = 8.dp,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            // Mostrar la categoría
+                            Text(
+                                text = item.category,
+                                modifier = Modifier
+                                    .padding(2.dp)
+                                    .width(70.dp),
+                                textAlign = TextAlign.Center,
+                                color = Color.Gray,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 11.sp,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                style = TextStyle(lineHeight = 18.sp)
+                            )
+                        }
                     }
                 }
             }
@@ -505,109 +515,111 @@ fun PieChart(title: String, data: List<GraphData>) {
     val sweepAngles = data.map { it.value.toFloat() / total.toFloat() * 360f }
     // Definir colores para los segmentos
     val colors = listOf(
-        LightBlueGradientStart,
-        LightBlueGradientEnd,
-        BlueFrance
+        MaterialTheme.colorScheme.primary,
+        MaterialTheme.colorScheme.secondary,
+        MaterialTheme.colorScheme.tertiary
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .shadow(
-                elevation = 16.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
-    ) {
-        // Usa las funciones de card y title.
-        ChartCard {
-            ChartTitle(title)
+    TirateUnPasoTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .shadow(
+                    elevation = 16.dp,
+                    shape = RoundedCornerShape(8.dp)
+                )
+        ) {
+            // Usa las funciones de card y title.
+            ChartCard {
+                ChartTitle(title)
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        var startAngle = 0f
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                    ) {
+                        Canvas(modifier = Modifier.fillMaxSize()) {
+                            var startAngle = 0f
 
-                        // Dibujar arcos base en gris para efectos visuales
-                        drawArc(
-                            color = Color.Gray.copy(alpha = 0.3f),
-                            startAngle = 0f,
-                            sweepAngle = 360f,
-                            useCenter = true,
-                            size = Size(size.width, size.height),
-                            style = Stroke(width = 16f)
-                        )
-                        drawArc(
-                            color = Color.Gray.copy(alpha = 0.2f),
-                            startAngle = 0f,
-                            sweepAngle = 360f,
-                            useCenter = true,
-                            size = Size(size.width, size.height),
-                            style = Stroke(width = 24f)
-                        )
-                        drawArc(
-                            color = Color.Gray.copy(alpha = 0.1f),
-                            startAngle = 0f,
-                            sweepAngle = 360f,
-                            useCenter = true,
-                            size = Size(size.width, size.height),
-                            style = Stroke(width = 38f)
-                        )
-                        // Dibujar segmentos del gráfico de torta
-                        data.forEachIndexed { index, _ ->
-                            val sweepAngle = sweepAngles[index]
+                            // Dibujar arcos base en gris para efectos visuales
                             drawArc(
-                                color = colors[index % colors.size],
-                                startAngle = startAngle,
-                                sweepAngle = sweepAngle,
+                                color = Color.Gray.copy(alpha = 0.3f),
+                                startAngle = 0f,
+                                sweepAngle = 360f,
                                 useCenter = true,
-                                size = Size(size.width, size.height)
+                                size = Size(size.width, size.height),
+                                style = Stroke(width = 16f)
                             )
-                            startAngle += sweepAngle
-                        }
-
-                        // Reiniciar el ángulo de inicio para etiquetas
-                        startAngle = 0f
-                        data.forEachIndexed { index, item ->
-                            val sweepAngle = sweepAngles[index]
-                            // Calcular la posición para las etiquetas
-                            val angle = Math.toRadians((startAngle + sweepAngle / 2).toDouble())
-                            val x = (size.width / 2 + (size.width / 4) * cos(angle)).toFloat()
-                            val y = (size.height / 2 + (size.height / 4) * sin(angle)).toFloat()
-
-                            // Dibujar las etiquetas
-                            drawContext.canvas.nativeCanvas.apply {
-                                drawText(
-                                    item.value.toString(),
-                                    x,
-                                    y - 20,
-                                    Paint().apply {
-                                        color = android.graphics.Color.WHITE
-                                        textAlign = Paint.Align.CENTER
-                                        textSize = 40f
-                                        isAntiAlias = true
-                                    }
+                            drawArc(
+                                color = Color.Gray.copy(alpha = 0.2f),
+                                startAngle = 0f,
+                                sweepAngle = 360f,
+                                useCenter = true,
+                                size = Size(size.width, size.height),
+                                style = Stroke(width = 24f)
+                            )
+                            drawArc(
+                                color = Color.Gray.copy(alpha = 0.1f),
+                                startAngle = 0f,
+                                sweepAngle = 360f,
+                                useCenter = true,
+                                size = Size(size.width, size.height),
+                                style = Stroke(width = 38f)
+                            )
+                            // Dibujar segmentos del gráfico de torta
+                            data.forEachIndexed { index, _ ->
+                                val sweepAngle = sweepAngles[index]
+                                drawArc(
+                                    color = colors[index % colors.size],
+                                    startAngle = startAngle,
+                                    sweepAngle = sweepAngle,
+                                    useCenter = true,
+                                    size = Size(size.width, size.height)
                                 )
-                                drawText(
-                                    item.category,
-                                    x,
-                                    y + 25,
-                                    Paint().apply {
-                                        color = android.graphics.Color.WHITE
-                                        textAlign = Paint.Align.CENTER
-                                        textSize = 30f
-                                        isAntiAlias = true
-                                    }
-                                )
+                                startAngle += sweepAngle
                             }
-                            startAngle += sweepAngle
+
+                            // Reiniciar el ángulo de inicio para etiquetas
+                            startAngle = 0f
+                            data.forEachIndexed { index, item ->
+                                val sweepAngle = sweepAngles[index]
+                                // Calcular la posición para las etiquetas
+                                val angle = Math.toRadians((startAngle + sweepAngle / 2).toDouble())
+                                val x = (size.width / 2 + (size.width / 4) * cos(angle)).toFloat()
+                                val y = (size.height / 2 + (size.height / 4) * sin(angle)).toFloat()
+
+                                // Dibujar las etiquetas
+                                drawContext.canvas.nativeCanvas.apply {
+                                    drawText(
+                                        item.value.toString(),
+                                        x,
+                                        y - 20,
+                                        Paint().apply {
+                                            color = android.graphics.Color.WHITE
+                                            textAlign = Paint.Align.CENTER
+                                            textSize = 40f
+                                            isAntiAlias = true
+                                        }
+                                    )
+                                    drawText(
+                                        item.category,
+                                        x,
+                                        y + 25,
+                                        Paint().apply {
+                                            color = android.graphics.Color.WHITE
+                                            textAlign = Paint.Align.CENTER
+                                            textSize = 30f
+                                            isAntiAlias = true
+                                        }
+                                    )
+                                }
+                                startAngle += sweepAngle
+                            }
                         }
                     }
                 }
@@ -615,7 +627,6 @@ fun PieChart(title: String, data: List<GraphData>) {
         }
     }
 }
-
 
 //------------------------------------------------------------------
 // SELECTOR DE GRÁFICOS
@@ -633,71 +644,73 @@ enum class GraphType {
 fun ButtonDropdown(onGraphSelected: (GraphType) -> Unit, modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
 
-    Box(modifier = modifier) {
-        Box(
-            modifier = Modifier
-                .size(32.dp) // Tamaño del botón
-                .border(2.dp, LightBlueGradientEnd, CircleShape)
-                .background(BlueFrance, CircleShape)
-                .clickable(onClick = { expanded = true })
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_down), // Icono de flecha hacia abajo
-                contentDescription = "Dropdown Arrow",
-                tint = Color.White,
+    TirateUnPasoTheme { // Envolver en el tema principal de la aplicación
+        Box(modifier = modifier) {
+            Box(
                 modifier = Modifier
-                    .size(26.dp) // Tamaño del icono
-                    .align(Alignment.Center)
-            )
-        }
+                    .size(32.dp) // Tamaño del botón
+                    .border(2.dp, MaterialTheme.colorScheme.secondary, CircleShape)
+                    .background(MaterialTheme.colorScheme.tertiary, CircleShape)
+                    .clickable(onClick = { expanded = true })
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow_down), // Icono de flecha hacia abajo
+                    contentDescription = "Dropdown Arrow",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(26.dp) // Tamaño del icono
+                        .align(Alignment.Center)
+                )
+            }
 
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .background(Color.White)
-        ) {
-            DropdownMenuItem(
-                text = { Text("Semanal - Barras horizontal") },
-                onClick = {
-                    onGraphSelected(GraphType.WEEKLY_HORIZONTAL)
-                    expanded = false
-                }
-            )
-            DropdownMenuItem(
-                text = { Text("Semanal - Barras vertical") },
-                onClick = {
-                    onGraphSelected(GraphType.WEEKLY_VERTICAL)
-                    expanded = false
-                }
-            )
-            DropdownMenuItem(
-                text = { Text("Resumen - Barras horizontal") },
-                onClick = {
-                    onGraphSelected(GraphType.HORIZONTAL)
-                    expanded = false
-                }
-            )
-            DropdownMenuItem(
-                text = { Text("Resumen - Barras vertical") },
-                onClick = {
-                    onGraphSelected(GraphType.VERTICAL)
-                    expanded = false
-                }
-            )
-            DropdownMenuItem(
-                text = { Text("Resumen - Torta") },
-                onClick = {
-                    onGraphSelected(GraphType.TORTA)
-                    expanded = false
-                }
-            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .background(Color.White)
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Semanal - Barras horizontal") },
+                    onClick = {
+                        onGraphSelected(GraphType.WEEKLY_HORIZONTAL)
+                        expanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Semanal - Barras vertical") },
+                    onClick = {
+                        onGraphSelected(GraphType.WEEKLY_VERTICAL)
+                        expanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Resumen - Barras horizontal") },
+                    onClick = {
+                        onGraphSelected(GraphType.HORIZONTAL)
+                        expanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Resumen - Barras vertical") },
+                    onClick = {
+                        onGraphSelected(GraphType.VERTICAL)
+                        expanded = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Resumen - Torta") },
+                    onClick = {
+                        onGraphSelected(GraphType.TORTA)
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }
 
-// Composable para el selector de ggráficos
+// Composable para el selector de gráficos
 @Composable
 fun GraphContainer(
     selectedGraph: GraphType,
@@ -705,33 +718,35 @@ fun GraphContainer(
     lastSevenDaysData: List<GraphData>,
     onGraphSelected: (GraphType) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        // Mostrar el gráfico seleccionado
-        Column(modifier = Modifier.align(Alignment.Center)) {
-            when (selectedGraph) {
-                GraphType.WEEKLY_HORIZONTAL -> BarChartH(
-                    "Semanal - Barras horizontal",
-                    data = lastSevenDaysData
-                )
-                GraphType.WEEKLY_VERTICAL -> BarChartV(
-                    "Semanal - Barras vertical",
-                    data = lastSevenDaysData
-                )
-                GraphType.HORIZONTAL -> BarChartH("Resumen - Barras horizontal", data = data)
-                GraphType.VERTICAL -> BarChartV("Resumen - Barras vertical", data = data)
-                GraphType.TORTA -> PieChart("Resumen - Torta", data = data)
-            }
-        }
-
-        // Usa el botón con dropdown en la esquina superior derecha del selector de gráficos
-        ButtonDropdown(
-            onGraphSelected = onGraphSelected,
+    TirateUnPasoTheme { // Envolver en el tema principal de la aplicación
+        Box(
             modifier = Modifier
-                .align(Alignment.TopEnd)
-                .offset(y = 6.dp) // Ajuste de posición del botón
-        )
+                .fillMaxWidth()
+        ) {
+            // Mostrar el gráfico seleccionado
+            Column(modifier = Modifier.align(Alignment.Center)) {
+                when (selectedGraph) {
+                    GraphType.WEEKLY_HORIZONTAL -> BarChartH(
+                        "Semanal - Barras horizontal",
+                        data = lastSevenDaysData
+                    )
+                    GraphType.WEEKLY_VERTICAL -> BarChartV(
+                        "Semanal - Barras vertical",
+                        data = lastSevenDaysData
+                    )
+                    GraphType.HORIZONTAL -> BarChartH("Resumen - Barras horizontal", data = data)
+                    GraphType.VERTICAL -> BarChartV("Resumen - Barras vertical", data = data)
+                    GraphType.TORTA -> PieChart("Resumen - Torta", data = data)
+                }
+            }
+
+            // Usa el botón con dropdown en la esquina superior derecha del selector de gráficos
+            ButtonDropdown(
+                onGraphSelected = onGraphSelected,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(y = 6.dp) // Ajuste de posición del botón
+            )
+        }
     }
 }
