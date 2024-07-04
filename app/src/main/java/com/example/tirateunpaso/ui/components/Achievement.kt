@@ -1,7 +1,5 @@
 package com.example.tirateunpaso.ui.components
 import TirateUnPasoTheme
-import com.example.tirateunpaso.ui.theme.*
-
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloat
@@ -35,16 +33,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.tirateunpaso.R
-import com.example.tirateunpaso.ui.screens.BlueFrance
-import com.example.tirateunpaso.ui.screens.DarkBlueGradientEnd
-import com.example.tirateunpaso.ui.screens.LightBlueCard
-import com.example.tirateunpaso.ui.screens.LightBlueGradientEnd
-import com.example.tirateunpaso.ui.screens.LightBlueGradientStart
 
 data class Content(
     val id:Int,
@@ -72,7 +64,7 @@ fun ExpandableCard(
         }
     }
     TirateUnPasoTheme { //envolver con TirateUnPasoTheme que es la función. Después se puede usar MaterialTheme.colorScheme para los colores
-        Card() {
+        Card {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,14 +78,13 @@ fun ExpandableCard(
                     verticalAlignment = Alignment.CenterVertically,
 //                horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    var trophy_id: Int
-                    if (content.unlocked) {
-                        trophy_id = R.drawable.trofeo_colores
+                    val trophyId: Int = if (content.unlocked) {
+                        R.drawable.trofeo_colores
                     } else {
-                        trophy_id = R.drawable.trofeo_byn
+                        R.drawable.trofeo_byn
                     }
                     Image(
-                        painter = painterResource(id = trophy_id),
+                        painter = painterResource(id = trophyId),
                         contentDescription = "Achievement trophy",
                         modifier = Modifier
                             .weight(2f)
