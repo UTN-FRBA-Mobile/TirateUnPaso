@@ -1,5 +1,6 @@
 package com.example.tirateunpaso
 
+import TirateUnPasoTheme
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -19,6 +20,8 @@ import android.app.Notification
 import androidx.lifecycle.lifecycleScope
 import com.example.tirateunpaso.database.healthadvice.HealthAdvice
 import kotlinx.coroutines.launch
+import com.example.tirateunpaso.ui.theme.*
+
 
 class MainActivity : ComponentActivity() {
 
@@ -29,7 +32,9 @@ class MainActivity : ComponentActivity() {
         createNotificationChannel()
         askToActivateNotifications()
         setContent {
-            TirateUnPaso(::sendNotification)
+            TirateUnPasoTheme {
+                TirateUnPaso(::sendNotification)
+            }
         }
     }
 

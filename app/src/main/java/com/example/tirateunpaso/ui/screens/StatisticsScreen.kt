@@ -11,18 +11,24 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.tirateunpaso.ui.components.Graphic
 import com.example.tirateunpaso.ui.components.HeaderText
 import com.example.tirateunpaso.ui.values
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.*
 
 @Composable
 fun StatisticsScreen(
-    onHomeClick:() -> Unit,
+    onHomeClick: () -> Unit,
+    viewModel: GraphViewModel = viewModel()
 ) {
+    val data by viewModel.graphData.collectAsState()
+    val selectedGraph by viewModel.selectedGraph.collectAsState()
+    val lastSevenDaysData by viewModel.lastSevenDaysData.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,7 +40,7 @@ fun StatisticsScreen(
         Button(
             onClick = onHomeClick,
             modifier = Modifier.align(alignment = Alignment.Start),
-        ){
+        ) {
             Text(
                 text = "Volver",
                 fontSize = values.fontsize
@@ -45,6 +51,9 @@ fun StatisticsScreen(
             modifier = Modifier.padding(vertical = values.defaultPadding)
         )
         Spacer(modifier = Modifier.height(values.defaultSpacing))
+
+        // Comento esto
+        /*
         Graphic(
             listOf(
                 Offset(1.0f, 100.0f),
@@ -66,6 +75,19 @@ fun StatisticsScreen(
             ),
             yMinDefaultValue = 0.0f,
         )
+        */
+
+        // Insertar las nuevas llamadas
+        GraphContainer(
+            selectedGraph = selectedGraph,
+            data = data,
+            lastSevenDaysData = lastSevenDaysData,
+            onGraphSelected = { graphType ->
+                viewModel.selectGraph(graphType)
+            }
+        )
+
+        CalendarScreen()
     }
 }
 

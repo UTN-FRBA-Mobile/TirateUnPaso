@@ -1,4 +1,7 @@
 package com.example.tirateunpaso.ui.components
+import TirateUnPasoTheme
+import com.example.tirateunpaso.ui.theme.*
+
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloat
@@ -9,6 +12,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,10 +35,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.tirateunpaso.R
+import com.example.tirateunpaso.ui.screens.BlueFrance
+import com.example.tirateunpaso.ui.screens.DarkBlueGradientEnd
+import com.example.tirateunpaso.ui.screens.LightBlueCard
+import com.example.tirateunpaso.ui.screens.LightBlueGradientEnd
+import com.example.tirateunpaso.ui.screens.LightBlueGradientStart
 
 data class Content(
     val id:Int,
@@ -53,72 +64,75 @@ fun ExpandableCard(
     val transition = updateTransition(targetState = expanded, label = "transition")
 
     val iconRotationDeg by
-            transition.animateFloat (label = "icon_change"){
-                state ->
-                if(state){
-                    0f
-                }else{
-                    180f
-                }
-            }
-
-    Card() {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Row(
+    transition.animateFloat(label = "icon_change") { state ->
+        if (state) {
+            0f
+        } else {
+            180f
+        }
+    }
+    TirateUnPasoTheme { //envolver con TirateUnPasoTheme que es la función. Después se puede usar MaterialTheme.colorScheme para los colores
+        Card() {
+            Column(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.SpaceBetween
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.background) // mismo color que las cards de la parte de estadísticas
             ) {
-                var trophy_id : Int
-                if(content.unlocked){
-                    trophy_id = R.drawable.trofeo_colores
-                }else{
-                    trophy_id = R.drawable.trofeo_byn
-                }
-                Image(
-                    painter = painterResource(id = trophy_id),
-                    contentDescription = "Achievement trophy",
+                Row(
                     modifier = Modifier
-                        .weight(2f)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = content.title,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(7f),
-                    maxLines = 3
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
+                        .padding(8.dp)
                         .fillMaxWidth()
-                        .weight(1f)
-                        .wrapContentSize(align = Alignment.CenterEnd),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowUp,
-                        contentDescription = null,
+                        .background(color = MaterialTheme.colorScheme.background),
+                    verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    var trophy_id: Int
+                    if (content.unlocked) {
+                        trophy_id = R.drawable.trofeo_colores
+                    } else {
+                        trophy_id = R.drawable.trofeo_byn
+                    }
+                    Image(
+                        painter = painterResource(id = trophy_id),
+                        contentDescription = "Achievement trophy",
                         modifier = Modifier
-                            .rotate(iconRotationDeg)
-                            .wrapContentSize(align = Alignment.CenterEnd)
-                            .clickable {
-                                onClickExpanded(content.id)
-                            }
+                            .weight(2f)
                     )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = content.title,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(7f),
+                        maxLines = 3
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .background(color = MaterialTheme.colorScheme.primary)
+                            .wrapContentSize(align = Alignment.CenterEnd),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowUp,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .rotate(iconRotationDeg)
+                                .wrapContentSize(align = Alignment.CenterEnd)
+                                .clickable {
+                                    onClickExpanded(content.id)
+                                }
+                        )
+                    }
                 }
+                //Spacer(modifier = Modifier.size(values.defaultSpacing))
+                ExpandableContent(
+                    isExpanded = expanded,
+                    desc = content.desc
+                )
             }
-            //Spacer(modifier = Modifier.size(values.defaultSpacing))
-            ExpandableContent(
-                isExpanded = expanded,
-                desc = content.desc
-            )
         }
     }
 }
