@@ -224,7 +224,7 @@ fun StepsCard(stepsToday: Int) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(250.dp)
-                        .background(color = MaterialTheme.colorScheme.tertiary)
+                        .background(color = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.75f))
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_running),
@@ -242,7 +242,7 @@ fun StepsCard(stepsToday: Int) {
                     ) {
                         Box(
                             modifier = Modifier
-                                .background(Color.Black.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.tertiary.copy(alpha = 1f), shape = RoundedCornerShape(8.dp))
                                 .padding(vertical = 4.dp, horizontal = 2.dp)
                                 .clickable(onClick = { /* No hacer nada */ }), // Esto es por si después queremos agregar algo
                             contentAlignment = Alignment.Center
