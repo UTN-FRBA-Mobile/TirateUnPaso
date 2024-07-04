@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -127,13 +128,7 @@ fun CalendarScreen(viewModel: CalendarViewModel = remember { CalendarViewModel()
                 modifier = Modifier.fillMaxWidth()
                     .shadow(
                         elevation = 16.dp,
-                        shape = RoundedCornerShape(16.dp))
-                /*
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(8.dp)
-                ) */,
+                        shape = RoundedCornerShape(16.dp)),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -145,7 +140,6 @@ fun CalendarScreen(viewModel: CalendarViewModel = remember { CalendarViewModel()
                     // Encabezado con el nombre del mes y botones de navegación
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
@@ -168,14 +162,32 @@ fun CalendarScreen(viewModel: CalendarViewModel = remember { CalendarViewModel()
                             }
                         }
 
-                        Text(
-                            text = "${viewModel.getCurrentMonthName()} ${viewModel.selectedYear.value}",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.tertiary,
-                            modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center
-                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(28.dp)
+                                .background(
+                                    brush = Brush.horizontalGradient(
+                                        colors = listOf(
+                                            MaterialTheme.colorScheme.tertiary,
+                                            MaterialTheme.colorScheme.primary
+                                        )
+                                    ),
+                                ),
+                            contentAlignment = Alignment.Center
+                        )  {
+                            Text(
+                                text = "${viewModel.getCurrentMonthName()} ${viewModel.selectedYear.value}",
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         IconButton(
                             onClick = { monthNavigation(1) },
