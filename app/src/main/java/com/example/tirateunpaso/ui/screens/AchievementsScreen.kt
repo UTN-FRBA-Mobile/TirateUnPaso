@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tirateunpaso.ui.components.ExpandableCard
+import com.example.tirateunpaso.ui.components.HeaderText
 import com.example.tirateunpaso.ui.values
 import com.example.tirateunpaso.ui.viewmodels.AchievementViewModel
 import com.example.tirateunpaso.ui.viewmodels.AppViewModelProvider
@@ -63,7 +64,14 @@ fun AchievementsScreen(
                         fontSize = values.fontsize
                     )
                 }
+
+                HeaderText(
+                    text = "Mis logros",
+                    modifier = Modifier.padding(vertical = values.defaultPadding),
+                )
+
                 Spacer(modifier = Modifier.height(values.defaultSpacing))
+
 
                 var expandedItem by remember { mutableIntStateOf(-1) }
 
