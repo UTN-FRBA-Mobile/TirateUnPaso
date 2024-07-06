@@ -59,7 +59,7 @@ fun AchievementsScreen(
                     modifier = Modifier.align(alignment = Alignment.Start),
                 ) {
                     Text(
-                        text = "Volver a home",
+                        text = "Volver",
                         fontSize = values.fontsize
                     )
                 }

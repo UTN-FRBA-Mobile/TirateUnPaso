@@ -1,5 +1,6 @@
 package com.example.tirateunpaso.ui.screens
 
+import TirateUnPasoTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -84,7 +85,7 @@ class GraphActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            TirateUnPasoTheme {
                 GraphScreen()
             }
         }
