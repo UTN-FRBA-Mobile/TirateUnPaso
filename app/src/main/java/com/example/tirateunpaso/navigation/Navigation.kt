@@ -12,9 +12,14 @@ import com.example.tirateunpaso.ui.screens.HomeScreen
 import com.example.tirateunpaso.ui.routes
 import com.example.tirateunpaso.ui.screens.AchievementsScreen
 import com.example.tirateunpaso.ui.screens.StatisticsScreen
+import com.example.tirateunpaso.viewmodel.StepCounterVM
 
 @Composable
-fun TirateUnPasoNavigation(navHostController: NavHostController, sendNotification: (HealthAdvice?) -> Unit) {
+fun TirateUnPasoNavigation(
+    navHostController: NavHostController,
+    sendNotification: (HealthAdvice?) -> Unit,
+    stepCounterVM : StepCounterVM
+) {
     NavHost(
         navController = navHostController,
         startDestination = routes.app_flow
@@ -32,7 +37,8 @@ fun TirateUnPasoNavigation(navHostController: NavHostController, sendNotificatio
                         navHostController.navigateToSingleTop(
                             routes.achievements
                         )
-                    }
+                    },
+                    stepCounterVM = stepCounterVM
                 )
             }
             composable(route = routes.achievements){

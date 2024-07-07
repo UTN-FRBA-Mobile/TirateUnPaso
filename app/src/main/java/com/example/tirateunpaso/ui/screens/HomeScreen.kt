@@ -14,6 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +33,7 @@ import com.example.tirateunpaso.ui.components.HeaderText
 import com.example.tirateunpaso.ui.values
 import com.example.tirateunpaso.ui.viewmodels.AppViewModelProvider
 import com.example.tirateunpaso.ui.viewmodels.HealthAdviceViewModel
+import com.example.tirateunpaso.viewmodel.StepCounterVM
 import kotlinx.coroutines.launch
 
 @Composable
@@ -74,7 +77,9 @@ fun HomeScreen(
     onAchievementsClick: () -> Unit,
     viewModel: GraphViewModel = viewModel(),
     healthAdviceViewModel: HealthAdviceViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    stepCounterVM : StepCounterVM
 ) {
+    val uiState by stepCounterVM.uiState.collectAsState()
     val scope = rememberCoroutineScope()
 
     /*
@@ -98,7 +103,8 @@ fun HomeScreen(
                 modifier = Modifier.padding(vertical = values.defaultPadding),
             )
 
-            StepsCard(stepsToday = viewModel.stepsToday.value)
+            //StepsCard(stepsToday = viewModel.stepsToday.value)
+            StepsCard(stepsToday = uiState.stepCount.toInt())
 
             Spacer(modifier = Modifier.height(values.defaultSpacing))
 
@@ -150,9 +156,10 @@ fun HomeScreen(
     }
 }
 
-
+/*
 @Preview(showSystemUi = true)
 @Composable
 fun DefaultHomePreview() {
     HomeScreen({},{},{})
 }
+*/
