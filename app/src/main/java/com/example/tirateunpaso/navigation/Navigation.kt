@@ -7,13 +7,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.tirateunpaso.database.healthadvice.HealthAdvice
 import com.example.tirateunpaso.ui.screens.HomeScreen
 import com.example.tirateunpaso.ui.routes
 import com.example.tirateunpaso.ui.screens.AchievementsScreen
 import com.example.tirateunpaso.ui.screens.StatisticsScreen
 
 @Composable
-fun TirateUnPasoNavigation(navHostController: NavHostController, sendNotification: () -> Unit) {
+fun TirateUnPasoNavigation(navHostController: NavHostController, sendNotification: (HealthAdvice?) -> Unit) {
     NavHost(
         navController = navHostController,
         startDestination = routes.app_flow
@@ -21,9 +22,7 @@ fun TirateUnPasoNavigation(navHostController: NavHostController, sendNotificatio
         navigation(startDestination = routes.home, route = routes.app_flow){
             composable(route = routes.home){
                 HomeScreen(
-                    onShowHealthAdviceClick = {
-                        sendNotification()
-                    },
+                    onShowHealthAdviceClick = sendNotification,
                     onStatisticsClick = {
                         navHostController.navigateToSingleTop(
                             routes.statistics

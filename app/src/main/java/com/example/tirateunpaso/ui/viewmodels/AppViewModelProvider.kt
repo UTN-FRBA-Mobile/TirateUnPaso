@@ -26,6 +26,12 @@ object AppViewModelProvider {
                 tirateUnPasoApplication().container.achievementsRepository
             )
         }
+        // Initializer for HealthAdviceViewModel
+        initializer {
+            HealthAdviceViewModel(
+                tirateUnPasoApplication().container.healthAdvicesRepository
+            )
+        }
     }
 }
 

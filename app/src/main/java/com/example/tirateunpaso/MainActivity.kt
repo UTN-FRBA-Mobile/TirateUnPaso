@@ -69,34 +69,30 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun sendNotification() {
-
-        val app : TirateUnPasoApplication = application as TirateUnPasoApplication
+    private fun sendNotification(opHealthAdvice: HealthAdvice?) {
         val context = this
 
         lifecycleScope.launch {
-            app.container.healthAdvicesRepository.getOneStream((0..19).random()).collect {
-                opHealthAdvice: HealthAdvice? ->
-                opHealthAdvice?.let { healthAdvice: HealthAdvice ->
+            opHealthAdvice?.let { healthAdvice: HealthAdvice ->
+                val builder = NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(R.drawable.notification_icon)
+                    .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+                    .setContentTitle(healthAdvice.category)
+                    .setContentText(healthAdvice.description)
+                    .setStyle(
+                        NotificationCompat.BigTextStyle()
+                            .bigText(healthAdvice.description)
+                    )
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-                    val builder = NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.drawable.notification_icon)
-                        .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-                        .setContentTitle(healthAdvice.category)
-                        .setContentText(healthAdvice.description)
-                        .setStyle(NotificationCompat.BigTextStyle()
-                            .bigText(healthAdvice.description))
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-                    askToActivateNotifications(builder.build())
-                }
+                askToActivateNotifications(builder.build())
             }
         }
     }
 }
 
 @Composable
-private fun TirateUnPaso(sendNotification: () -> Unit) {
+private fun TirateUnPaso(sendNotification: (HealthAdvice?) -> Unit) {
     val navController = rememberNavController()
     TirateUnPasoNavigation(navHostController = navController, sendNotification = sendNotification)
 }
