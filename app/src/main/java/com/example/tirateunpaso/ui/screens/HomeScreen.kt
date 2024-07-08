@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+// import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +33,54 @@ import com.example.tirateunpaso.ui.values
 import com.example.tirateunpaso.ui.viewmodels.AppViewModelProvider
 import com.example.tirateunpaso.ui.viewmodels.HealthAdviceViewModel
 import kotlinx.coroutines.launch
+
+/*
+val recommendations = listOf(
+    "Caminá al menos 30 minutos todos los días.",
+    "Intentá usar las escaleras en lugar del ascensor siempre que puedas.",
+    "No te olvides de elongar después de cada sesión de ejercicio.",
+    "Mantené una buena hidratación a lo largo del día.",
+    "Calentá correctamente antes de empezar a correr para evitar lesiones.",
+    "Usá calzado cómodo y adecuado para caminar.",
+    "Programá caminatas al aire libre para disfrutar del entorno.",
+    "Registrá tus pasos diarios para mantener un seguimiento de tu progreso.",
+    "Buscá compañía para caminar y hacerlo más entretenido.",
+    "Variá tu ruta de caminata para evitar el aburrimiento y estimular diferentes músculos.",
+    "Aprovechá los momentos de descanso para estirar y moverte.",
+    "Incorporá ejercicios de fuerza como sentadillas o flexiones para complementar tus caminatas.",
+    "Hacé pausas activas durante el día para estirar y mover las piernas.",
+    "Usá está app para establecer metas y recibir recordatorios de actividad física.",
+    "Escuchá música o podcasts motivadores durante tus caminatas para mantenerte inspirado."
+)
+
+@Composable
+fun RecommendationCard(recommendations: List<String>) {
+    val random = remember { java.util.Random() }
+    val randomIndex = remember { random.nextInt(recommendations.size) }
+    val recommendation = recommendations[randomIndex]
+
+    ChartCard {
+        ChartTitle("Recomendación")
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = values.defaultSpacing)
+        ) {
+            Text(
+                text = recommendation,
+                modifier = Modifier
+                    .padding(2.dp),
+                // .width(70.dp),
+                textAlign = TextAlign.Center,
+                color = Color.Gray,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                style = TextStyle(lineHeight = 18.sp)
+            )
+        }
+    }
+}
+*/
 
 @Composable
 fun RecommendationCard(healthAdvice: HealthAdvice?) {
@@ -76,13 +125,6 @@ fun HomeScreen(
     healthAdviceViewModel: HealthAdviceViewModel = viewModel(factory = AppViewModelProvider.Factory),
 ) {
     val scope = rememberCoroutineScope()
-
-    /*
-    LaunchedEffect(key1 = healthAdviceViewModel) {
-        healthAdviceViewModel.viewModelScope.launch(Dispatchers.IO) {
-            healthAdviceViewModel.retrieveRandomHealthAdvice()
-        }
-    }*/
 
     TirateUnPasoTheme {
         Column(

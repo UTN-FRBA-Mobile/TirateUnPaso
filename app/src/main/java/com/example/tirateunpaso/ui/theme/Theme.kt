@@ -4,15 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.example.tirateunpaso.ui.theme.*
 
-val LigthSurface = Color.White
-val LightBlueCard = Color(0xFFE3F2FD)
-val LightBlueGradientStart = Color(0xFF42A5F5)
-val LightBlueGradientEnd = Color(0xFF1976D2)
-val BlueFrance = Color(0xFF01579B)
-val DarkBlueFrance = Color(0xFF0D47A1)
-val DarkBlue = Color(0xFF002366)
-val DarkSurface = Color(0xFF1E1E1E)
-val DarkBackground = Color(0xFF121212)
+    val LigthSurface = Color.White
+    val LightBlueCard = Color(0xFFE3F2FD)
+    val LightBlueGradientStart = Color(0xFF42A5F5)
+    val LightBlueGradientEnd = Color(0xFF1976D2)
+    val BlueFrance = Color(0xFF01579B)
+    // val DarkBlueFrance = Color(0xFF0D47A1)
+    val DarkBlue = Color(0xFF002366)
+    val DarkSurface = Color(0xFF1E1E1E)
+    // val DarkBackground = Color(0xFF121212)
 
 private val LightThemeColors = lightColorScheme(
     primary = LightBlueGradientStart,
@@ -30,20 +30,20 @@ private val LightThemeColors = lightColorScheme(
     onError = Color.White
 )
 
-private val DarkThemeColors = darkColorScheme(
+private val DarkThemeColors = lightColorScheme(
     primary = LightBlueGradientStart,
     primaryContainer = LightBlueGradientStart,
-    secondary = DarkBlueFrance,
+    secondary = LightBlueGradientEnd,
     tertiary = DarkBlue,
-    background = DarkBackground,
-    surface = DarkSurface,
-    error = Color(0xFFCF6679),
-    onPrimary = Color.Black,
+    background = DarkSurface,
+    surface = LigthSurface,
+    error = Color(0xFFB00020),
+    onPrimary = Color.White,
     onSecondary = DarkBlue,
     onTertiary = BlueFrance,
-    onBackground = Color.White,
-    onSurface = Color.White,
-    onError = Color.Black
+    onBackground = Color.Black,
+    onSurface = Color.Black,
+    onError = Color.White
 )
 
 @Composable
