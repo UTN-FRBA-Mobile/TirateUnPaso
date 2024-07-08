@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.*
 import androidx.lifecycle.ViewModel
+import com.example.tirateunpaso.DataGenerator
+import com.example.tirateunpaso.RawData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
