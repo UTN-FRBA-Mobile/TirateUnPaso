@@ -65,7 +65,8 @@ object DataGenerator {
 
             // Determinar el valor de cada día para testear
             val value = when (it) {
-                0, 6 -> 250  // Hoy y hoy + 6 valor 250
+                0 -> 0
+                6 -> 250  // hoy + 6 valor 250
                 1 -> 0
                 7, 14 -> 100 // Hoy + 7 y hoy + 14 valor 100
                 else -> 1000 // 1000 en todos los demás días
