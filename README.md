@@ -1,5 +1,6 @@
 # TirateUnPaso
-Tirate un paso
+TirateUnPaso es una aplicación que cuenta pasos utilizando la API de Android Health. Además, cuenta con un selector que permite visualizar varios gráficos y un calendario integrado.
+También tiene una funcionalidad de logros y otra para mostrar distintos consejos. 
 
 ## Base de datos SQLite
 
